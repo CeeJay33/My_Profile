@@ -74,10 +74,11 @@
 
         <!-- mobile nav -->
 
-        <ul id="sideMenu" class="flex md:hidden flex-col gap-4 py-20 px-10 fixed -right-64 top-0 bottom-0 w-64 z-50 h-screen bg-rose-50 transition duration-500 font-Ovo">
+        <ul id="sideMenu" class="flex md:hidden flex-col gap-4 py-20 px-10 fixed -right-64 top-0 bottom-0 w-64 z-50 h-screen bg-rose-50 transition duration-500 border font-Ovo dark:bg-darkTheme dark:border-darkHover">
 
             <div class="absolute right-6 top-6" onclick="closeMenu()">
-                <img src="./icons8-x-30.png" class="w-6 cursor-pointer" alt="">
+                <img src="./icons8-x-30.png" class="w-6 cursor-pointer dark:hidden" alt="">
+                <img src="./output-onlinepnggtools.png" class="w-6 cursor-pointer hidden dark:block" alt="">
             </div>
             <li><a href="#top" onclick="closeMenu()">Home</a></li>
             <li><a href="#about" onclick="closeMenu()">About me</a></li>
@@ -99,7 +100,7 @@
         <div class="flex flex-col sm:flex-row items-center gap-4 mt-4">
             <a href="#contact" class="px-10 py-3 border rounded-full bg-gradient-to-r text-white from-[#b820e6] to-[#da7d20] flex items-center gap-2 dark:border-transparent">Contact me <img src="./icons8-right-arrow-64.png" alt="" class="w-4"></a>
 
-            <a href="https://my-profile-eta-five.vercel.app/CV_new.pdf" download="CV_new.pdf" 
+            <a href="https://portfolio-one-bay-50.vercel.app/CV_new.pdf" download="CV_new.pdf" 
    class="px-10 py-3 border rounded-full border-gray-500 flex items-center gap-2 bg-white dark:text-black">
   My resume
   <img src="./icons8-download-64.png" alt="" class="w-5">
