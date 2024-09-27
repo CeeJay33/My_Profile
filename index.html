@@ -74,10 +74,11 @@
 
         <!-- mobile nav -->
 
-        <ul id="sideMenu" class="flex md:hidden flex-col gap-4 py-20 px-10 fixed -right-64 top-0 bottom-0 w-64 z-50 h-screen bg-rose-50 transition duration-500 font-Ovo dark:bg-darkTheme">
+        <ul id="sideMenu" class="flex md:hidden flex-col gap-4 py-20 px-10 fixed -right-64 top-0 bottom-0 w-64 z-50 h-screen bg-rose-50 transition duration-500 border font-Ovo dark:bg-darkTheme dark:border-darkHover">
 
             <div class="absolute right-6 top-6" onclick="closeMenu()">
-                <img src="./icons8-x-30.png" class="w-6 cursor-pointer" alt="">
+                <img src="./icons8-x-30.png" class="w-6 cursor-pointer dark:hidden" alt="">
+                <img src="./output-onlinepnggtools.png" class="w-6 cursor-pointer hidden dark:block" alt="">
             </div>
             <li><a href="#top" onclick="closeMenu()">Home</a></li>
             <li><a href="#about" onclick="closeMenu()">About me</a></li>
