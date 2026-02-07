@@ -4,14 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playwrite+DE+Grund:wght@100..400&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">    <title>Portfolio || Profile</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+DE+Grund:wght@100..400&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <title>Chris Joshua — Fullstack Developer & Technical Lead</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="./tailwind.config.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Ovo&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Ovo&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        lightHover: '#fcf4ff',
+                        darkTheme: 'rgb(0, 0, 8)',
+                        darkHover: 'rgb(1, 1, 27)',
+                    },
+                    fontFamily: {
+                        Outfit: ["Outfit", "sans-serif"],
+                        Ovo: ["Ovo", "serif"],
+                    },
+                    gridTemplateColumns: {
+                        'auto': 'repeat(auto-fit, minmax(200px, 1fr))',
+                    },
+                    animation: {
+                        spin_slow: 'spin 6s linear infinite',
+                    },
+                },
+            },
+        }
+    </script>
+
     <style>
         .bg-gradient-overlay::before {
             content: '';
@@ -20,18 +46,311 @@
             background: linear-gradient(to bottom, rgba(0, 0, 0, 0.218), rgba(0, 0, 0, 0.182));
             z-index: 1;
             pointer-events: none;
+            color: rgb(1, 1, 27);
         }
 
         h1, h2, h3, p, span {
             font-family: "Roboto", sans-serif;
         }
+
+        /* ============================================
+           CAROUSEL ENGINE
+           ============================================ */
+        .carousel-viewport {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        .carousel-track {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: 100%;
+            transition: transform 0.65s cubic-bezier(0.4, 0, 0.15, 1);
+            will-change: transform;
+        }
+
+        .carousel-slide {
+            width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 4px;
+        }
+
+        .carousel-slide-inner {
+            width: 100%;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        /* Prevent flex children from overflowing the slide */
+        .carousel-slide-inner > * {
+            min-width: 0;
+        }
+
+        /* Progress bar */
+        .carousel-progress-track {
+            height: 3px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .carousel-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.65s cubic-bezier(0.4, 0, 0.15, 1);
+            background: linear-gradient(90deg, #b820e6, #da7d20);
+        }
+
+        /* Dot indicators */
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.35s;
+        }
+
+        .carousel-dot.active {
+            width: 28px;
+            border-radius: 4px;
+        }
+
+        /* ============================================
+           BROWSER MOCKUP ANIMATIONS
+           ============================================ */
+
+        /* Shared mockup */
+        .mockup-frame {
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.12);
+        }
+        .dark .mockup-frame {
+            box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        .mockup-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 14px;
+        }
+
+        .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        .mockup-url-pill {
+            margin-left: 10px;
+            padding: 3px 14px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-family: 'Space Mono', monospace;
+            max-width: 200px;
+        }
+
+        .mockup-body {
+            padding: 16px;
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- Animation: Typing terminal --- */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .cursor-blink::after {
+            content: '▋';
+            animation: blink 1s step-end infinite;
+            color: #b820e6;
+        }
+
+        /* --- Animation: Pulsing nodes --- */
+        @keyframes nodePulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; }
+        }
+
+        .pulse-node {
+            animation: nodePulse 2s ease-in-out infinite;
+        }
+
+        /* --- Animation: Data stream flow --- */
+        @keyframes streamFlow {
+            0% { transform: translateX(-100%); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateX(200%); opacity: 0; }
+        }
+
+        .data-stream {
+            animation: streamFlow 3s ease-in-out infinite;
+        }
+
+        /* --- Animation: Floating cards --- */
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .float-card {
+            animation: floatCard 3s ease-in-out infinite;
+        }
+
+        /* --- Animation: Chart bars grow --- */
+        @keyframes barGrow {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+
+        .grow-bar {
+            transform-origin: bottom;
+            animation: barGrow 1.2s ease-out forwards;
+        }
+
+        /* --- Animation: Orbiting ring --- */
+        @keyframes orbit {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .orbit-ring {
+            animation: orbit 8s linear infinite;
+        }
+
+        /* --- Animation: Scan line --- */
+        @keyframes scanLine {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+
+        .scan-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #b820e6, transparent);
+            animation: scanLine 3s ease-in-out infinite;
+            opacity: 0.5;
+        }
+
+        /* --- Animation: Fade in stagger --- */
+        @keyframes fadeInStagger {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stagger-in > * {
+            opacity: 0;
+            animation: fadeInStagger 0.4s ease forwards;
+        }
+        .stagger-in > *:nth-child(1) { animation-delay: 0.1s; }
+        .stagger-in > *:nth-child(2) { animation-delay: 0.2s; }
+        .stagger-in > *:nth-child(3) { animation-delay: 0.3s; }
+        .stagger-in > *:nth-child(4) { animation-delay: 0.4s; }
+        .stagger-in > *:nth-child(5) { animation-delay: 0.5s; }
+        .stagger-in > *:nth-child(6) { animation-delay: 0.6s; }
+
+        /* ============================================
+           IPHONE FRAME
+           ============================================ */
+        .iphone-frame {
+            width: 180px;
+            max-width: 45%;
+            border-radius: 28px;
+            padding: 8px;
+            position: relative;
+            box-shadow: 0 20px 60px -10px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+        .dark .iphone-frame {
+            box-shadow: 0 20px 60px -10px rgba(0,0,0,0.5);
+        }
+
+        .iphone-notch {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 22px;
+            border-radius: 0 0 14px 14px;
+            z-index: 5;
+        }
+
+        .iphone-screen {
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 9/19.5;
+            position: relative;
+        }
+
+        .iphone-screen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .iphone-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-family: 'Space Mono', monospace;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .iphone-home-indicator {
+            width: 40%;
+            height: 4px;
+            border-radius: 4px;
+            margin: 6px auto 2px;
+        }
+
+        /* ============================================
+           FEATURE ITEM HOVER
+           ============================================ */
+        .feature-item {
+            transition: transform 0.2s;
+        }
+        .feature-item:hover {
+            transform: translateX(4px);
+        }
+
+        .tech-chip {
+            transition: all 0.2s;
+        }
+        .tech-chip:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ============================================
+           NAV BUTTON ARROW ANIMATION
+           ============================================ */
+        .nav-arrow-btn svg {
+            transition: transform 0.3s;
+        }
+        .nav-arrow-btn:hover svg {
+            transform: translateX(3px);
+        }
+        .nav-arrow-btn.prev:hover svg {
+            transform: translateX(-3px);
+        }
     </style>
 </head>
 <body class="overflow-x-hidden font-Outfit leading-8 dark:bg-darkTheme dark:text-white">
 
-    <div class="fixed top-0 right-0 w-11/12 -z-10 traslate-y-[-80%] dark:hidden">
+    <div class="fixed top-0 right-0 w-11/12 -z-10 translate-y-[-80%] dark:hidden">
         <img src="./eb0ea9ebcafce728d22ebef1334a68f6.jpg" alt="" class="w-full">
     </div>
+
+    <!-- ============ NAVIGATION ============ -->
     <nav class="w-full fixed px-5 lg:px-8 xl:px-[8%] py-4 flex items-center justify-between z-50">
         <img src="./output-onlinepngtools.png" alt="logo" class="w-28 cursor-pointer mr-14 dark:hidden">
         <img src="./pngwing.com.png" alt="logo" class="w-28 cursor-pointer mr-14 hidden dark:block">
@@ -39,6 +358,7 @@
             <li><a href="#top">Home</a></li>
             <li><a href="#about">About me</a></li>
             <li><a href="#Services">Services</a></li>
+            <li><a href="#helparr">Helparr</a></li>
             <li><a href="#work">My work</a></li>
             <li><a href="#contact">Contact me</a></li>
         </ul>
@@ -49,33 +369,22 @@
                 <img src="./sun-svgrepo-com.png" class="w-6 hidden dark:block" alt="">
             </button>
             <a href="#contact"
-                class="hidden lg:flex item-center gap-3 px-10 py-2.5 border border-gray-500 rounded-full ml-4 font-Ovo dark:border-white/50">Contact <svg
-                    class="w-3 dark:hidden" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
-                    <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4.343 15.657L15.657 4.343m0 0v9.9m0-9.9h-9.9" />
+                class="hidden lg:flex item-center gap-3 px-10 py-2.5 border border-gray-500 rounded-full ml-4 font-Ovo dark:border-white/50">Contact
+                <svg class="w-3 dark:hidden" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
+                    <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.343 15.657L15.657 4.343m0 0v9.9m0-9.9h-9.9" />
                 </svg>
-            
-                 <svg
-                    class="w-3 hidden dark:block" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
-                    <path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4.343 15.657L15.657 4.343m0 0v9.9m0-9.9h-9.9" />
+                <svg class="w-3 hidden dark:block" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
+                    <path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.343 15.657L15.657 4.343m0 0v9.9m0-9.9h-9.9" />
                 </svg>
-            
             </a>
-
-                <button class="block md:hidden ml-3" onclick="openMenu()">
-                    <img src="./icons8-paragraph-64.png" alt="" class="w-6 dark:hidden">
-                    <img src="./output-onlinepngtool.png" alt="" class="w-6 hidden dark:block">
-
-                </button>
+            <button class="block md:hidden ml-3" onclick="openMenu()">
+                <img src="./icons8-paragraph-64.png" alt="" class="w-6 dark:hidden">
+                <img src="./output-onlinepngtool.png" alt="" class="w-6 hidden dark:block">
+            </button>
         </div>
 
-
-
         <!-- mobile nav -->
-
         <ul id="sideMenu" class="flex md:hidden flex-col gap-4 py-20 px-10 fixed -right-64 top-0 bottom-0 w-64 z-50 h-screen bg-rose-50 transition duration-500 border font-Ovo dark:bg-darkTheme dark:border-darkHover">
-
             <div class="absolute right-6 top-6" onclick="closeMenu()">
                 <img src="./icons8-x-30.png" class="w-6 cursor-pointer dark:hidden" alt="">
                 <img src="./output-onlinepnggtools.png" class="w-6 cursor-pointer hidden dark:block" alt="">
@@ -83,279 +392,714 @@
             <li><a href="#top" onclick="closeMenu()">Home</a></li>
             <li><a href="#about" onclick="closeMenu()">About me</a></li>
             <li><a href="#Services" onclick="closeMenu()">Services</a></li>
+            <li><a href="#helparr" onclick="closeMenu()">Helparr</a></li>
             <li><a href="#work" onclick="closeMenu()">My work</a></li>
             <li><a href="#contact" onclick="closeMenu()">Contact me</a></li>
         </ul>
-
     </nav>
 
-    <!-- body of my portfolio -->
-
-    <div class="w-11/12 max-w-3x1 text-center mx-auto h-screen flex flex-col items-center justify-center gap-4">
+    <!-- ============ HERO ============ -->
+    <div id="top" class="w-11/12 max-w-3xl text-center mx-auto h-screen flex flex-col items-center justify-center gap-4">
         <img src="./photo_2024-09-02_22-54-35-removebg-preview.png" alt="" class="rounded-full w-32">
-        <h3 class="flex items-center gap-2 text-xl md:text-2xl mb-3 font-Ovo">Hi! I'm Chris Joshua <img src="./icons8-so-so-48.png" alt="" class="w-6"></h3>
-        <h1 class="text-3xl max-w-3xl mx-auto sm:text-6xl lg:text-[66px] opacity-85 font-Ovo">Full stack Web developer based in Nigeria</h1>
-        <p class="max-w-2xl mx-auto font-Ovo">I am a full stack developer from Lagos Nigeria with 2 years of experience</p>
-
+        <h3 class="flex items-center gap-2 text-xl md:text-2xl mb-3 font-Ovo">Hi! I'm Christopher Joshua
+            <img src="./icons8-so-so-48.png" alt="" class="w-6">
+        </h3>
+        <h1 class="text-3xl max-w-3xl mx-auto sm:text-6xl lg:text-[66px] opacity-85 font-Ovo">Fullstack Developer & Technical Lead based in Nigeria</h1>
+        <p class="max-w-2xl mx-auto font-Ovo">Fullstack developer with 4+ years of experience building secure, scalable applications. Currently Technical Lead at Helparr AI Limited.</p>
         <div class="flex flex-col sm:flex-row items-center gap-4 mt-4">
             <a href="#contact" class="px-10 py-3 border rounded-full bg-gradient-to-r text-white from-[#b820e6] to-[#da7d20] flex items-center gap-2 dark:border-transparent">Contact me <img src="./icons8-right-arrow-64.png" alt="" class="w-4"></a>
-
-            <a href="https://my-profile-eta-five.vercel.app/CV_new.pdf" download="CV_new.pdf" 
-   class="px-10 py-3 border rounded-full border-gray-500 flex items-center gap-2 bg-white dark:text-black">
-  My resume
-  <img src="./icons8-download-64.png" alt="" class="w-5">
-</a>
-
+            <a href="https://my-profile-eta-five.vercel.app/CV_new.pdf" download="CV_new.pdf" class="px-10 py-3 border rounded-full border-gray-500 flex items-center gap-2 bg-white dark:text-black">My resume <img src="./icons8-download-64.png" alt="" class="w-5"></a>
         </div>
     </div>
 
-    <!-- about me section -->
-
-
+    <!-- ============ ABOUT ME ============ -->
     <div id="about" class="w-full px-[12%] py-10 scroll-mt-20">
         <h4 class="text-center mb-2 text-lg font-Ovo">Introduction</h4>
         <h2 class="text-center text-5xl font-Ovo">About me</h2>
-
-
         <div class="flex w-full flex-col lg:flex-row items-center gap-20 my-20">
-            <div class="max-w-max mx-auto relative ">
-                <img src="./3d-man-with-hire-me-placard-HA14ER.jpg" alt="" class="w-64 sm:w-80 rounded-3xl max-w-none">
-
-                <div class="bg-white w-1/2 aspect-square absolute right-0 bottom-0 rounded-full trasnslate-x-1/4 translate-y-1/3 flex items-center justify-center  shadow-[0_4px_55px_rgba(149,0,162,0.15)]">
+            <div class="max-w-max mx-auto relative">
+                <img src="./3d-man-with-hire-me-placard-HA14ER-removebg-preview.png" alt="" class="w-64 sm:w-80 rounded-3xl max-w-none">
+                <div class="bg-white w-1/2 aspect-square absolute right-0 bottom-0 rounded-full translate-x-1/4 translate-y-1/3 flex items-center justify-center shadow-[0_4px_55px_rgba(149,0,162,0.15)]">
                     <img src="./inkpx-curved-text.png" alt="" class="w-full animate-spin_slow">
                     <img src="./359647a1110d0bd2aa48a0de48d7b584-removebg-preview.png" alt="" class="w-1/4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 </div>
             </div>
             <div class="flex-1">
-                <p class="mb-10 max-w-2xl font-Ovo">I am an experienced Full stack developer with over 2 years of expertise in the field. Throughout my carrer, I have had the priviledge of collaborating with prestigious organization, contributing to their success and growth.</p>
-
-                <ul class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2x1">
-                    <li class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-lightHover hover:-trasnslate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
+                <p class="mb-10 max-w-2xl font-Ovo">Passionate and skilled Full Stack Developer with a strong foundation in both frontend and backend development. Proficient in modern web technologies and frameworks, with a focus on creating responsive and user-friendly web applications. Adept in problem-solving and cybersecurity practices, ensuring secure and efficient solutions. Currently serving as Technical Lead at Helparr AI Limited, overseeing cloud infrastructure, AI model training, and DevOps operations.</p>
+                <ul class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl">
+                    <li class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-lightHover hover:-translate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
                         <img src="./icons8-source-code-50.png" alt="" class="w-7 mt-3 dark:hidden">
                         <img src="./output-onlinepngtoolsss.png" alt="" class="w-7 mt-3 hidden dark:block">
                         <h3 class="my-4 font-semibold text-gray-700 dark:text-white">Languages</h3>
-                        <p class="text-gray-600 text-sm dark:text-white/80">HTML, CSS, JavaScript Vue Js, Nuxt js, Php/Laravel, MYSQL, Git, Linux</p>
+                        <p class="text-gray-600 text-sm dark:text-white/80">HTML, CSS, JavaScript, Vue.js/Nuxt.js, PHP/Laravel, React Native, Express.js, C#</p>
                     </li>
-                                        <li
-                                            class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-lightHover hover:-trasnslate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
-                                            <img src="./icons8-graduation-cap-80.png" alt="" class="w-7 mt-3 dark:hidden">
-                                            <img src="./output-onlinepngtoools.png" alt="" class="w-7 mt-3 hidden dark:block">
-                                            <h3 class="my-4 font-semibold text-gray-700 dark:text-white">Education</h3>
-                                            <p class="text-gray-600 text-sm dark:text-white/80">High School, undergoing Computer Science</p>
-                                        </li>
-                                                            <li
-                                                                class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-lightHover hover:-trasnslate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
-                                                                <img src="./icons8-project-64.png" alt="" class="w-7 mt-3 dark:hidden">
-                                                                <img src="./ooutput-onlinepngtools.png" alt="" class="w-7 mt-3 hidden dark:block">
-                                                                <h3 class="my-4 font-semibold text-gray-700 dark:text-white">Projects</h3>
-                                                                <p class="text-gray-600 text-sm dark:text-white/80">Built more than 5 projects</p>
-                                                            </li>
+                    <li class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-lightHover hover:-translate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
+                        <img src="./icons8-graduation-cap-80.png" alt="" class="w-7 mt-3 dark:hidden">
+                        <img src="./output-onlinepngtoools.png" alt="" class="w-7 mt-3 hidden dark:block">
+                        <h3 class="my-4 font-semibold text-gray-700 dark:text-white">Education</h3>
+                        <p class="text-gray-600 text-sm dark:text-white/80">High School, undergoing Computer Science</p>
+                    </li>
+                    <li class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-lightHover hover:-translate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
+                        <img src="./icons8-project-64.png" alt="" class="w-7 mt-3 dark:hidden">
+                        <img src="./ooutput-onlinepngtools.png" alt="" class="w-7 mt-3 hidden dark:block">
+                        <h3 class="my-4 font-semibold text-gray-700 dark:text-white">Projects</h3>
+                        <p class="text-gray-600 text-sm dark:text-white/80">Built 8+ projects across 5+ companies</p>
+                    </li>
                 </ul>
-
                 <h4 class="my-6 text-gray-700 font-Ovo dark:text-white/80">Tools i use</h4>
-
                 <ul class="flex items-center gap-3 sm:gap-5">
-                    <li class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:-trasnslate-y-1 duration-500">
-                        <img src="./62a7906ce42d729d928b1757.png" alt="" class="w-5 sm:w-9">
-                    </li>
-                                        <li
-                                            class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:-trasnslate-y-1 duration-500">
-                                            <img src="./Adobe_Logo_Icon_PNG-removebg-preview.png" alt="" class="w-5 sm:w-9">
-                                        </li>
-                                                            <li
-                                                                class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:-trasnslate-y-1 duration-500">
-                                                                <img src="./mysql-relational-database-management-system-logo-microsoft-sql-server-mysql-logo-73b6fc96e390343142f206eb1170c7bc.png" alt="" class="w-5 sm:w-9">
-                                                            </li>
-                                                                                <li
-                                                                                    class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:-trasnslate-y-1 duration-500">
-                                                                                    <img src="./png-transparent-figma-logo-brand-logos-brands-in-colors-icon-thumbnail-removebg-preview.png" alt="" class="w-5 sm:w-9">
-                                                                                </li>
-                                                                                                    <li
-                                                                                                        class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:-trasnslate-y-1 duration-500">
-                                                                                                        <img src="./png-clipart-github-repository-git-project-commit-github-angle-logo-removebg-preview.png" alt="" class="w-5 sm:w-9">
-                                                                                                    </li>
+                    <li class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:-translate-y-1 duration-500"><img src="./62a7906ce42d729d928b1757.png" alt="" class="w-5 sm:w-9"></li>
+                    <li class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:-translate-y-1 duration-500"><img src="./Adobe_Logo_Icon_PNG-removebg-preview.png" alt="" class="w-5 sm:w-9"></li>
+                    <li class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:-translate-y-1 duration-500"><img src="./mysql-relational-database-management-system-logo-microsoft-sql-server-mysql-logo-73b6fc96e390343142f206eb1170c7bc.png" alt="" class="w-5 sm:w-9"></li>
+                    <li class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:-translate-y-1 duration-500"><img src="./png-transparent-figma-logo-brand-logos-brands-in-colors-icon-thumbnail-removebg-preview.png" alt="" class="w-5 sm:w-9"></li>
+                    <li class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:-translate-y-1 duration-500"><img src="./png-clipart-github-repository-git-project-commit-github-angle-logo-removebg-preview.png" alt="" class="w-5 sm:w-9"></li>
                 </ul>
             </div>
         </div>
     </div>
 
-
-
-    <!-- servicess -->
-
+    <!-- ============ SERVICES ============ -->
     <div id="Services" class="w-full px-[12%] py-10 scroll-mt-20">
         <h4 class="text-center mb-2 text-lg font-Ovo">What i offer</h4>
         <h2 class="text-center text-5xl font-Ovo">My services</h2>
-        <p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Ovo"> I am a full stack developer from Lagos Nigeria with 2 years of experience in multiple organizations</p>
-
+        <p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Ovo">Fullstack developer with 4+ years of expertise across cloud, AI, cybersecurity, and web development.</p>
         <div class="grid grid-cols-auto gap-6 my-10">
             <div class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-lightHover hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
-                <img src="./eb71b266fecce5119d2b1c3dcec7c663-removebg-preview.png" alt="" class="w-10 bg-pink-600 rounded" >
-                <h3 class="text-lg my-4 text-gray-700 dark:text-white">Front-end dev</h3>
-                <p class="text-sm text-gray-600 leading-5 dark:text-white/80">Front-end development refers to the process of designing the part of a website...</p>
-                <a href="" class="flex items-center gap-2 text-sm mt-5">Read more <img src="./right-arrow.png" alt=""
-                        class="w-5 dark:hidden">
-                     <img src="./icons8-right-arrow-64.png" alt="" class="w-5 hidden dark:block">
-                    </a>
-            </div>
-            <div
-                class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-lightHover hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
                 <img src="./eb71b266fecce5119d2b1c3dcec7c663-removebg-preview.png" alt="" class="w-10 bg-pink-600 rounded">
-                <h3 class="text-lg my-4 text-gray-700 dark:text-white">Cyber security</h3>
-                <p class="text-sm text-gray-600 leading-5 dark:text-white/80">Cybersecurity is the practice of protecting computers, servers... </p>
-                <a href="" class="flex items-center gap-2 text-sm mt-5">Read more <img src="./right-arrow.png" alt=""
-                        class="w-5 dark:hidden">
-                     <img src="./icons8-right-arrow-64.png" alt="" class="w-5 hidden dark:block">
-                    </a>
+                <h3 class="text-lg my-4 text-gray-700 dark:text-white">Front-end Dev</h3>
+                <p class="text-sm text-gray-600 leading-5 dark:text-white/80">Building responsive, high-performance interfaces with Vue.js, Nuxt.js, Tailwind CSS, and React Native for web and mobile.</p>
+                <a href="" class="flex items-center gap-2 text-sm mt-5">Read more <img src="./right-arrow.png" alt="" class="w-5 dark:hidden"><img src="./icons8-right-arrow-64.png" alt="" class="w-5 hidden dark:block"></a>
             </div>
-            <div
-                class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-lightHover hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
+            <div class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-lightHover hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
                 <img src="./eb71b266fecce5119d2b1c3dcec7c663-removebg-preview.png" alt="" class="w-10 bg-pink-600 rounded">
-                <h3 class="text-lg my-4 text-gray-700 dark:text-white">Ethical hacking</h3>
-                <p class="text-sm text-gray-600 leading-5 dark:text-white/80">Ethical hacking refers to the authorized practice of bypassing system security...</p>
-                <a href="" class="flex items-center gap-2 text-sm mt-5">Read more 
-                   <img src="./right-arrow.png" alt=""
-                        class="w-5 dark:hidden">
-                     <img src="./icons8-right-arrow-64.png" alt="" class="w-5 hidden dark:block">
-                    </a>
+                <h3 class="text-lg my-4 text-gray-700 dark:text-white">Back-end Dev</h3>
+                <p class="text-sm text-gray-600 leading-5 dark:text-white/80">Designing secure backend APIs with PHP/Laravel, Express.js, MySQL, PostgreSQL, and Redis. Payment gateway integrations.</p>
+                <a href="" class="flex items-center gap-2 text-sm mt-5">Read more <img src="./right-arrow.png" alt="" class="w-5 dark:hidden"><img src="./icons8-right-arrow-64.png" alt="" class="w-5 hidden dark:block"></a>
             </div>
-            <div
-                class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-lightHover hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
+            <div class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-lightHover hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
                 <img src="./eb71b266fecce5119d2b1c3dcec7c663-removebg-preview.png" alt="" class="w-10 bg-pink-600 rounded">
-                <h3 class="text-lg my-4 text-gray-700 dark:text-white">Back-end dev</h3>
-                <p class="text-sm text-gray-600 leading-5 dark:text-white/80">Back-end development refers to the server-side aspect of web or application...</p>
-                <a href="" class="flex items-center gap-2 text-sm mt-5">Read more
-                     <img src="./right-arrow.png" alt=""
-                        class="w-5 dark:hidden">
-                     <img src="./icons8-right-arrow-64.png" alt="" class="w-5 hidden dark:block">
-
-                    </a>
+                <h3 class="text-lg my-4 text-gray-700 dark:text-white">Cloud & DevOps</h3>
+                <p class="text-sm text-gray-600 leading-5 dark:text-white/80">Managing Google Cloud infrastructure, CloudLinux environments, server hardening, Nginx/Apache, and CI/CD pipelines.</p>
+                <a href="" class="flex items-center gap-2 text-sm mt-5">Read more <img src="./right-arrow.png" alt="" class="w-5 dark:hidden"><img src="./icons8-right-arrow-64.png" alt="" class="w-5 hidden dark:block"></a>
             </div>
+            <!-- <div class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-lightHover hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
+                <img src="./eb71b266fecce5119d2b1c3dcec7c663-removebg-preview.png" alt="" class="w-10 bg-pink-600 rounded">
+                <h3 class="text-lg my-4 text-gray-700 dark:text-white">Cybersecurity</h3>
+                <p class="text-sm text-gray-600 leading-5 dark:text-white/80">Ethical hacking, penetration testing with Kali Linux, Burp Suite, Wireshark, Nmap, and secure coding practices.</p>
+                <a href="" class="flex items-center gap-2 text-sm mt-5">Read more <img src="./right-arrow.png" alt="" class="w-5 dark:hidden"><img src="./icons8-right-arrow-64.png" alt="" class="w-5 hidden dark:block"></a>
+            </div> -->
         </div>
     </div>
 
 
-    <!-- my work -->
-      <div id="work" class="w-full px-[12%] py-10 scroll-mt-20">
-        <h4 class="text-center mb-2 text-lg font-Ovo">My portfolio</h4>
-        <h2 class="text-center text-5xl font-Ovo">My latest work</h2>
-        <p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Ovo"> I am a full stack developer from Lagos Nigeria with 2 years of experience in multiple organizations</p>
+    <!-- ============================================================
+         HELPARR PRODUCTS — CAROUSEL
+         ============================================================ -->
+    <div id="helparr" class="w-full px-[12%] py-10 scroll-mt-20">
+        <h4 class="text-center mb-2 text-lg font-Ovo">Featured Role</h4>
+        <h2 class="text-center text-5xl font-Ovo">Built at Helparr AI</h2>
+        <p class="text-center max-w-2xl mx-auto mt-5 mb-4 font-Ovo">As Technical Lead at Helparr AI Limited, I architected and shipped these core platform modules — from cloud infrastructure to AI-powered services.</p>
 
-        <div class="grid grid-cols-auto my-10 gap-5 dark:text-black">
-            <div class="aspect-square bg-[url('./Screenshot_20240730_173608-1.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
+        <!-- Role badge -->
+        <div class="flex justify-center mb-8">
+            <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-gradient-to-r from-[#b820e6]/10 to-[#da7d20]/10 border border-[#b820e6]/20 dark:border-[#b820e6]/30">
+                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                <span class="text-sm font-semibold text-[#b820e6] dark:text-[#d580ff]">Technical Lead · Jul 2025 – Present</span>
+            </div>
+        </div>
 
-                <div class="bg-white w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7">
-                    <div>
-                        <h2 class="font-semibold">Frontend project</h2>
-                        <p class="text-sm text-gray-700">Web Design</p>
-                    </div>
-
-                    <div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-lime-300 transition">
-                        <img src="./icons8-send-64.png" alt="" class="w-5">
-                    </div>
+        <!-- Carousel controls: top bar -->
+        <div class="max-w-5xl mx-auto flex items-center justify-between mb-5">
+            <div class="flex items-center gap-3">
+                <span id="carouselCounter" class="text-sm font-semibold text-gray-500 dark:text-white/40" style="font-family:'Space Mono',monospace">01 / 06</span>
+                <div class="carousel-progress-track w-24 bg-gray-200 dark:bg-white/10">
+                    <div id="carouselProgressFill" class="carousel-progress-fill" style="width: 16.66%"></div>
                 </div>
             </div>
-             <div class="aspect-square bg-[url('./Screenshot_20240730_165328.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group bg-gradient-overlay">
+            <div class="flex items-center gap-2">
+                <button onclick="carouselPrev()" class="nav-arrow-btn prev w-10 h-10 rounded-full border border-gray-300 dark:border-white/20 flex items-center justify-center hover:bg-lightHover dark:hover:bg-darkHover/50 transition duration-300">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <button onclick="carouselNext()" class="nav-arrow-btn group flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#b820e6] to-[#da7d20] text-white text-sm font-semibold hover:shadow-lg hover:shadow-[#b820e6]/20 transition duration-300">
+                    Next Product
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+        </div>
 
+        <!-- Dot indicators -->
+        <div class="max-w-5xl mx-auto flex items-center gap-2 mb-6">
+            <div class="carousel-dot active bg-gradient-to-r from-[#b820e6] to-[#da7d20]" onclick="carouselGoTo(0)"></div>
+            <div class="carousel-dot bg-gray-300 dark:bg-white/20" onclick="carouselGoTo(1)"></div>
+            <div class="carousel-dot bg-gray-300 dark:bg-white/20" onclick="carouselGoTo(2)"></div>
+            <div class="carousel-dot bg-gray-300 dark:bg-white/20" onclick="carouselGoTo(3)"></div>
+            <div class="carousel-dot bg-gray-300 dark:bg-white/20" onclick="carouselGoTo(4)"></div>
+            <div class="carousel-dot bg-gray-300 dark:bg-white/20" onclick="carouselGoTo(5)"></div>
+        </div>
+
+        <!-- ===== CAROUSEL VIEWPORT ===== -->
+        <div class="max-w-5xl mx-auto carousel-viewport rounded-2xl">
+            <div id="carouselTrack" class="carousel-track">
+
+                <!-- ========== SLIDE 1: Helparr AI Platform ========== -->
+                <div class="carousel-slide">
+                    <div class="carousel-slide-inner flex flex-col lg:flex-row gap-8 items-start p-2">
+                        <!-- Left: Browser Mockup with Animation -->
+                        <div class="w-full lg:w-1/2">
+                            <div class="mockup-frame border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5">
+                                <div class="mockup-bar bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
+                                    <span class="mockup-dot bg-red-400"></span>
+                                    <span class="mockup-dot bg-yellow-400"></span>
+                                    <span class="mockup-dot bg-green-400"></span>
+                                    <span class="mockup-url-pill bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-white/30">helparr.com</span>
+                                </div>
+                                <div class="mockup-body bg-gradient-to-br from-gray-50 to-white dark:from-[#1a1030] dark:to-[#11001F]">
+                                    <div class="scan-line"></div>
+                                    <!-- Animated dashboard layout -->
+                                    <div class="stagger-in space-y-3">
+                                        <div class="h-6 w-3/4 rounded bg-gradient-to-r from-[#b820e6]/20 to-transparent"></div>
+                                        <div class="flex gap-2">
+                                            <div class="float-card flex-1 h-16 rounded-lg bg-gradient-to-br from-[#b820e6]/15 to-[#b820e6]/5 border border-[#b820e6]/10 flex items-center justify-center">
+                                                <div class="text-center">
+                                                    <div class="text-[10px] text-gray-400 dark:text-white/30">Active Users</div>
+                                                    <div class="text-sm font-bold text-[#b820e6]">2,847</div>
+                                                </div>
+                                            </div>
+                                            <div class="float-card flex-1 h-16 rounded-lg bg-gradient-to-br from-[#da7d20]/15 to-[#da7d20]/5 border border-[#da7d20]/10 flex items-center justify-center" style="animation-delay:0.5s">
+                                                <div class="text-center">
+                                                    <div class="text-[10px] text-gray-400 dark:text-white/30">Artisans</div>
+                                                    <div class="text-sm font-bold text-[#da7d20]">1,205</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Animated chart bars -->
+                                        <div class="flex items-end gap-1 h-14 pt-2">
+                                            <div class="grow-bar flex-1 bg-[#b820e6]/30 rounded-t" style="height:40%; animation-delay:0.1s"></div>
+                                            <div class="grow-bar flex-1 bg-[#b820e6]/40 rounded-t" style="height:65%; animation-delay:0.2s"></div>
+                                            <div class="grow-bar flex-1 bg-[#b820e6]/50 rounded-t" style="height:45%; animation-delay:0.3s"></div>
+                                            <div class="grow-bar flex-1 bg-[#b820e6]/60 rounded-t" style="height:80%; animation-delay:0.4s"></div>
+                                            <div class="grow-bar flex-1 bg-[#b820e6]/70 rounded-t" style="height:55%; animation-delay:0.5s"></div>
+                                            <div class="grow-bar flex-1 bg-[#b820e6] rounded-t" style="height:95%; animation-delay:0.6s"></div>
+                                            <div class="grow-bar flex-1 bg-[#da7d20]/60 rounded-t" style="height:70%; animation-delay:0.7s"></div>
+                                            <div class="grow-bar flex-1 bg-[#da7d20] rounded-t" style="height:85%; animation-delay:0.8s"></div>
+                                        </div>
+                                        <div class="h-3 w-1/2 rounded bg-gray-200/50 dark:bg-white/5"></div>
+                                        <div class="flex gap-2">
+                                            <div class="h-10 flex-1 rounded-lg bg-[#b820e6]/10 border border-[#b820e6]/10"></div>
+                                            <div class="h-10 flex-1 rounded-lg bg-[#da7d20]/10 border border-[#da7d20]/10"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Right: Info -->
+                        <div class="w-full lg:w-1/2">
+                            <span class="inline-block px-3 py-1 rounded text-xs font-bold uppercase tracking-widest bg-[#b820e6]/10 text-[#b820e6] dark:text-[#d580ff] mb-4">Core Platform</span>
+                            <h3 class="text-2xl font-bold font-Ovo mb-3">Helparr AI Platform</h3>
+                            <p class="text-gray-600 dark:text-white/70 text-sm leading-7 mb-5">The central hub connecting skilled artisans and service providers with customers across Africa. I led the full technical architecture — from the web platform to the backend API layer powering all Helparr services.</p>
+                            <ul class="space-y-2 mb-5">
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> End-to-end platform architecture & leadership</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Multi-service ecosystem (Pay, Sells, Save, Academy)</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Scalable API design serving thousands of users</li>
+                            </ul>
+                            <div class="flex flex-wrap gap-2 mb-5">
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Nuxt.js</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Laravel</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">PostgreSQL</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Redis</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">WebSocket</span>
+                            </div>
+                            <a href="https://helparr.com" target="_blank" class="inline-flex items-center gap-2 text-sm font-semibold text-[#b820e6] dark:text-[#d580ff] hover:gap-3 transition-all">Visit helparr.com →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== SLIDE 2: Helparr Sells ========== -->
+                <div class="carousel-slide">
+                    <div class="carousel-slide-inner flex flex-col lg:flex-row gap-8 items-start p-2">
+                        <div class="w-full lg:w-1/2 flex gap-5 items-center justify-center">
+                            <!-- Browser mockup -->
+                            <div class="flex-1">
+                                <div class="mockup-frame border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5">
+                                    <div class="mockup-bar bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
+                                        <span class="mockup-dot bg-red-400"></span>
+                                        <span class="mockup-dot bg-yellow-400"></span>
+                                        <span class="mockup-dot bg-green-400"></span>
+                                        <span class="mockup-url-pill bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-white/30">helparr.com/sells</span>
+                                    </div>
+                                    <div class="mockup-body bg-gradient-to-br from-orange-50 to-white dark:from-[#1a1020] dark:to-[#11001F]">
+                                        <!-- Animated e-commerce grid -->
+                                        <div class="stagger-in space-y-3">
+                                            <div class="flex gap-2 items-center">
+                                                <div class="h-5 flex-1 rounded bg-[#da7d20]/15"></div>
+                                                <div class="h-5 w-5 rounded bg-[#da7d20]/25 flex items-center justify-center text-[8px]">🛒</div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-2">
+                                                <div class="float-card rounded-lg border border-[#da7d20]/10 overflow-hidden">
+                                                    <div class="h-12 bg-gradient-to-br from-[#da7d20]/20 to-[#da7d20]/5"></div>
+                                                    <div class="p-1.5">
+                                                        <div class="h-2 w-3/4 bg-gray-200 dark:bg-white/10 rounded mb-1"></div>
+                                                        <div class="h-2 w-1/2 bg-[#da7d20]/30 rounded"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="float-card rounded-lg border border-[#b820e6]/10 overflow-hidden" style="animation-delay:0.3s">
+                                                    <div class="h-12 bg-gradient-to-br from-[#b820e6]/20 to-[#b820e6]/5"></div>
+                                                    <div class="p-1.5">
+                                                        <div class="h-2 w-3/4 bg-gray-200 dark:bg-white/10 rounded mb-1"></div>
+                                                        <div class="h-2 w-1/2 bg-[#b820e6]/30 rounded"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="float-card rounded-lg border border-green-500/10 overflow-hidden" style="animation-delay:0.6s">
+                                                    <div class="h-12 bg-gradient-to-br from-green-500/20 to-green-500/5"></div>
+                                                    <div class="p-1.5">
+                                                        <div class="h-2 w-3/4 bg-gray-200 dark:bg-white/10 rounded mb-1"></div>
+                                                        <div class="h-2 w-1/2 bg-green-500/30 rounded"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="float-card rounded-lg border border-pink-500/10 overflow-hidden" style="animation-delay:0.9s">
+                                                    <div class="h-12 bg-gradient-to-br from-pink-500/20 to-pink-500/5"></div>
+                                                    <div class="p-1.5">
+                                                        <div class="h-2 w-3/4 bg-gray-200 dark:bg-white/10 rounded mb-1"></div>
+                                                        <div class="h-2 w-1/2 bg-pink-500/30 rounded"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="h-8 rounded-lg bg-[#da7d20] flex items-center justify-center">
+                                                <span class="text-[9px] text-white font-bold tracking-wide">CHECKOUT — ₦24,500</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- iPhone placeholder -->
+                            <div class="hidden sm:block">
+                                <div class="iphone-frame bg-gray-900 dark:bg-gray-800 border border-gray-700">
+                                    <div class="iphone-notch bg-gray-900 dark:bg-gray-800"></div>
+                                    <div class="iphone-screen bg-gray-100 dark:bg-[#1a1030]">
+                                        <!-- INSERT YOUR SCREENSHOT: Replace this div with <img src="./your-sells-screenshot.png"> -->
+                                        <div class="iphone-placeholder text-gray-400 dark:text-white/20 bg-gradient-to-b from-[#da7d20]/5 to-[#b820e6]/5">
+                                            <div>
+                                                <div class="text-lg mb-1">📱</div>
+                                                <div>Helparr Sells<br><span class="text-[9px] opacity-60">Insert screenshot here</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="iphone-home-indicator bg-gray-600"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full lg:w-1/2">
+                            <span class="inline-block px-3 py-1 rounded text-xs font-bold uppercase tracking-widest bg-[#da7d20]/10 text-[#da7d20] dark:text-orange-300 mb-4">E-Commerce</span>
+                            <h3 class="text-2xl font-bold font-Ovo mb-3">Helparr Sells</h3>
+                            <p class="text-gray-600 dark:text-white/70 text-sm leading-7 mb-5">A full-featured e-commerce module allowing artisans and sellers to list, manage, and sell products directly through the Helparr ecosystem. Integrated with Helparr Pay for seamless checkout.</p>
+                            <ul class="space-y-2 mb-5">
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Product listing, cart & checkout flow</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Integrated with Helparr Pay for payments</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Seller dashboard & inventory management</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Real-time order tracking & notifications</li>
+                            </ul>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Nuxt.js</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Express.js</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">PostgreSQL</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Paystack</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== SLIDE 3: Cloud Infrastructure (GCP) ========== -->
+                <div class="carousel-slide">
+                    <div class="carousel-slide-inner flex flex-col lg:flex-row gap-8 items-start p-2">
+                        <div class="w-full lg:w-1/2">
+                            <div class="mockup-frame border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5">
+                                <div class="mockup-bar bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
+                                    <span class="mockup-dot bg-red-400"></span>
+                                    <span class="mockup-dot bg-yellow-400"></span>
+                                    <span class="mockup-dot bg-green-400"></span>
+                                    <span class="mockup-url-pill bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-white/30">console.cloud.google.com</span>
+                                </div>
+                                <div class="mockup-body bg-gradient-to-br from-cyan-50 to-white dark:from-[#0a1520] dark:to-[#11001F]">
+                                    <!-- Animated GCP infrastructure -->
+                                    <div class="relative">
+                                        <div class="scan-line" style="animation-duration:4s"></div>
+                                        <!-- Server nodes -->
+                                        <div class="flex justify-center mb-4">
+                                            <div class="text-center">
+                                                <div class="text-[9px] text-gray-400 dark:text-white/30 mb-1">GCP — E2-standard-4</div>
+                                                <div class="flex gap-3 justify-center">
+                                                    <div class="pulse-node w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center text-white text-[10px] font-bold shadow-lg shadow-cyan-500/20" style="animation-delay:0s">VM1</div>
+                                                    <div class="pulse-node w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center text-white text-[10px] font-bold shadow-lg shadow-cyan-500/20" style="animation-delay:0.7s">VM2</div>
+                                                    <div class="pulse-node w-10 h-10 rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-[10px] font-bold shadow-lg shadow-teal-500/20" style="animation-delay:1.4s">DB</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Connections -->
+                                        <div class="flex justify-center mb-3">
+                                            <div class="h-px w-32 relative overflow-hidden bg-cyan-200 dark:bg-cyan-800">
+                                                <div class="data-stream absolute h-full w-4 bg-cyan-400"></div>
+                                            </div>
+                                        </div>
+                                        <!-- Metrics -->
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <div class="rounded-lg bg-cyan-500/10 border border-cyan-500/10 p-2 text-center">
+                                                <div class="text-[8px] text-gray-400 dark:text-white/30">CPU</div>
+                                                <div class="text-xs font-bold text-cyan-500">34%</div>
+                                            </div>
+                                            <div class="rounded-lg bg-teal-500/10 border border-teal-500/10 p-2 text-center">
+                                                <div class="text-[8px] text-gray-400 dark:text-white/30">RAM</div>
+                                                <div class="text-xs font-bold text-teal-500">6.2G</div>
+                                            </div>
+                                            <div class="rounded-lg bg-green-500/10 border border-green-500/10 p-2 text-center">
+                                                <div class="text-[8px] text-gray-400 dark:text-white/30">Disk</div>
+                                                <div class="text-xs font-bold text-green-500">128G</div>
+                                            </div>
+                                        </div>
+                                        <!-- Uptime bar -->
+                                        <div class="mt-3 h-6 rounded bg-gray-100 dark:bg-white/5 flex items-center px-2 gap-1">
+                                            <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                                            <span class="text-[8px] text-gray-400 dark:text-white/30">Uptime: 99.97% · CentOS + CloudLinux</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full lg:w-1/2">
+                            <span class="inline-block px-3 py-1 rounded text-xs font-bold uppercase tracking-widest bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 mb-4">Infrastructure</span>
+                            <h3 class="text-2xl font-bold font-Ovo mb-3">Cloud Architecture</h3>
+                            <p class="text-gray-600 dark:text-white/70 text-sm leading-7 mb-5">Designed and managed the entire cloud infrastructure on Google Cloud Platform — ensuring high availability, security, and cost efficiency for Helparr's growing user base across Africa.</p>
+                            <ul class="space-y-2 mb-5">
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> GCP E2-standard-4 instances with CentOS & CloudLinux</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Persistent disk volumes & load balancing</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> WHM/cPanel & CloudWatch monitoring</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Auto-scaling & security hardening</li>
+                            </ul>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Google Cloud</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">CloudLinux</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Nginx</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">WHM/cPanel</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== SLIDE 4: AI Models ========== -->
+                <div class="carousel-slide">
+                    <div class="carousel-slide-inner flex flex-col lg:flex-row gap-8 items-start p-2">
+                        <div class="w-full lg:w-1/2">
+                            <div class="mockup-frame border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5">
+                                <div class="mockup-bar bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
+                                    <span class="mockup-dot bg-red-400"></span>
+                                    <span class="mockup-dot bg-yellow-400"></span>
+                                    <span class="mockup-dot bg-green-400"></span>
+                                    <span class="mockup-url-pill bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-white/30">runpod.io / inference</span>
+                                </div>
+                                <div class="mockup-body bg-gradient-to-br from-pink-50 to-white dark:from-[#1a0a20] dark:to-[#11001F]">
+                                    <!-- Neural network visualization -->
+                                    <div class="relative flex flex-col items-center">
+                                        <div class="text-[9px] text-gray-400 dark:text-white/30 mb-3">Qlura Transformer — Fine-tuning</div>
+                                        <!-- Orbit animation -->
+                                        <div class="relative w-28 h-28 mb-3">
+                                            <div class="absolute inset-0 border-2 border-dashed border-pink-300/30 dark:border-pink-500/20 rounded-full orbit-ring"></div>
+                                            <div class="absolute inset-2 border-2 border-dashed border-[#b820e6]/20 rounded-full orbit-ring" style="animation-direction:reverse; animation-duration:6s"></div>
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <div class="pulse-node w-10 h-10 rounded-full bg-gradient-to-br from-[#b820e6] to-pink-500 flex items-center justify-center text-white text-[10px] font-bold shadow-lg shadow-pink-500/30">AI</div>
+                                            </div>
+                                            <!-- Orbiting nodes -->
+                                            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 pulse-node w-5 h-5 rounded-full bg-pink-400 shadow shadow-pink-400/40" style="animation-delay:0.3s"></div>
+                                            <div class="absolute bottom-0 right-0 translate-x-1/4 pulse-node w-4 h-4 rounded-full bg-[#da7d20] shadow shadow-orange-400/40" style="animation-delay:0.8s"></div>
+                                            <div class="absolute top-1/2 left-0 -translate-x-1/2 pulse-node w-4 h-4 rounded-full bg-[#b820e6] shadow shadow-purple-400/40" style="animation-delay:1.2s"></div>
+                                        </div>
+                                        <!-- Metrics -->
+                                        <div class="w-full grid grid-cols-2 gap-2">
+                                            <div class="rounded-lg bg-pink-500/10 border border-pink-500/10 p-2 text-center">
+                                                <div class="text-[8px] text-gray-400 dark:text-white/30">Accuracy</div>
+                                                <div class="text-xs font-bold text-pink-500">94.2%</div>
+                                            </div>
+                                            <div class="rounded-lg bg-[#b820e6]/10 border border-[#b820e6]/10 p-2 text-center">
+                                                <div class="text-[8px] text-gray-400 dark:text-white/30">Latency</div>
+                                                <div class="text-xs font-bold text-[#b820e6]">120ms</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full lg:w-1/2">
+                            <span class="inline-block px-3 py-1 rounded text-xs font-bold uppercase tracking-widest bg-pink-500/10 text-pink-600 dark:text-pink-400 mb-4">Artificial Intelligence</span>
+                            <h3 class="text-2xl font-bold font-Ovo mb-3">AI Model Training & Deployment</h3>
+                            <p class="text-gray-600 dark:text-white/70 text-sm leading-7 mb-5">Fine-tuned and deployed custom AI models powering Helparr's intelligent artisan recommendation system — trained on instruction-based datasets for contextual understanding.</p>
+                            <ul class="space-y-2 mb-5">
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Fine-tuned with Luara & Qlura Transformers</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Advanced quantization for cost efficiency</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> GPU-dedicated pods on RunPod.io</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Custom instruction datasets for accuracy</li>
+                            </ul>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Qlura</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Luara</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">RunPod.io</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Transformers</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== SLIDE 5: Mobile App ========== -->
+                <div class="carousel-slide">
+                    <div class="carousel-slide-inner flex flex-col lg:flex-row gap-8 items-center p-2">
+                        <div class="w-full lg:w-1/2 flex justify-center gap-5">
+                            <!-- iPhone 1 -->
+                            <div class="iphone-frame bg-gray-900 dark:bg-gray-800 border border-gray-700">
+                                <div class="iphone-notch bg-gray-900 dark:bg-gray-800"></div>
+                                <div class="iphone-screen bg-gray-100 dark:bg-[#1a1030]">
+                                    <!-- INSERT YOUR SCREENSHOT: Replace this div with <img src="./your-mobile-home.png"> -->
+                                   <img src="./IMG_3030.png" alt="">
+                                </div>
+                                <div class="iphone-home-indicator bg-gray-600"></div>
+                            </div>
+                            <!-- iPhone 2 -->
+                            <div class="iphone-frame bg-gray-900 dark:bg-gray-800 border border-gray-700 hidden sm:block" style="margin-top: 30px;">
+                                <div class="iphone-notch bg-gray-900 dark:bg-gray-800"></div>
+                                <div class="iphone-screen bg-gray-100 dark:bg-[#1a1030]">
+                                    <!-- INSERT YOUR SCREENSHOT: Replace this div with <img src="./your-mobile-map.png"> -->
+                                    <img src="./IMG_3042.png" alt="">
+                                </div>
+                                <div class="iphone-home-indicator bg-gray-600"></div>
+                            </div>
+                        </div>
+                        <div class="w-full lg:w-1/2">
+                            <span class="inline-block px-3 py-1 rounded text-xs font-bold uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400 mb-4">Mobile</span>
+                            <h3 class="text-2xl font-bold font-Ovo mb-3">Helparr Mobile App</h3>
+                            <p class="text-gray-600 dark:text-white/70 text-sm leading-7 mb-5">Built the Helparr mobile application with React Native and Expo, featuring location-based artisan discovery with React Native Maps, push notifications, and seamless over-the-air updates.</p>
+                            <ul class="space-y-2 mb-5">
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Location-based artisan discovery with maps</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Google Play Store & App Store deployment</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> OTA updates via Expo for instant patches</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Optimized for African mobile networks</li>
+                            </ul>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">React Native</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">React Native Maps</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Expo OTA</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Express.js</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== SLIDE 6: DevOps ========== -->
+                <div class="carousel-slide">
+                    <div class="carousel-slide-inner flex flex-col lg:flex-row gap-8 items-start p-2">
+                        <div class="w-full lg:w-1/2">
+                            <div class="mockup-frame border border-gray-200 dark:border-white/10 bg-gray-900">
+                                <div class="mockup-bar bg-gray-800 border-b border-gray-700">
+                                    <span class="mockup-dot bg-red-400"></span>
+                                    <span class="mockup-dot bg-yellow-400"></span>
+                                    <span class="mockup-dot bg-green-400"></span>
+                                    <span class="mockup-url-pill bg-gray-700 text-gray-400">terminal — bash</span>
+                                </div>
+                                <div class="mockup-body bg-gray-900 font-mono text-[11px] leading-5" style="min-height: 240px">
+                                    <!-- Animated terminal -->
+                                    <div id="terminalLines" class="space-y-1">
+                                        <div class="text-green-400">chris@helparr-prod:~$<span class="text-gray-300 ml-1">git log --oneline -5</span></div>
+                                        <div class="text-gray-400">a3f9c21 feat: add Expo OTA pipeline</div>
+                                        <div class="text-gray-400">b7d4e18 fix: SSH key rotation script</div>
+                                        <div class="text-gray-400">c2a6f90 chore: update nginx conf</div>
+                                        <div class="text-gray-400">d8b1c37 feat: Google Workspace setup</div>
+                                        <div class="text-gray-400">e5f2a84 fix: cPanel SSL renewal</div>
+                                        <div class="mt-2 text-green-400">chris@helparr-prod:~$<span class="text-gray-300 ml-1">ssh deploy@prod-server</span></div>
+                                        <div class="text-cyan-400">Connected to helparr-prod (GCP e2-standard-4)</div>
+                                        <div class="text-gray-400">Last login: Sat Feb 07 2026 10:23:41</div>
+                                        <div class="mt-2 text-green-400">deploy@prod:~$<span class="text-gray-300 ml-1">systemctl status nginx</span></div>
+                                        <div class="flex items-center gap-1"><span class="text-green-400">●</span><span class="text-gray-300">nginx.service - active (running)</span></div>
+                                        <div class="mt-2 text-green-400">deploy@prod:~$<span class="cursor-blink text-gray-300 ml-1"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full lg:w-1/2">
+                            <span class="inline-block px-3 py-1 rounded text-xs font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mb-4">Operations</span>
+                            <h3 class="text-2xl font-bold font-Ovo mb-3">DevOps & Infrastructure</h3>
+                            <p class="text-gray-600 dark:text-white/70 text-sm leading-7 mb-5">Established the full DevOps pipeline, team collaboration tools, and deployment workflows — from Git-based version control to Expo OTA updates for instant mobile patches.</p>
+                            <ul class="space-y-2 mb-5">
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Git-based CI/CD deployment workflows</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> SSH security hardening & key management</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Expo OTA for instant mobile updates</li>
+                                <li class="feature-item flex items-start gap-3 text-sm text-gray-600 dark:text-white/70"><span class="text-green-500 font-bold mt-0.5">✓</span> Google Workspace under company domain</li>
+                            </ul>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Git</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">SSH</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Expo OTA</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Nginx</span>
+                                <span class="tech-chip px-3 py-1 rounded-md text-xs font-mono bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/40">Google Workspace</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /carousel-track -->
+        </div><!-- /carousel-viewport -->
+    </div><!-- /helparr section -->
+
+
+    <!-- ============ MY WORK ============ -->
+    <div id="work" class="w-full px-[12%] py-10 scroll-mt-20">
+        <h4 class="text-center mb-2 text-lg font-Ovo">My portfolio</h4>
+        <h2 class="text-center text-5xl font-Ovo">My latest work</h2>
+        <p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Ovo">A selection of projects I've built across different organizations and roles.</p>
+        <div class="grid grid-cols-auto my-10 gap-5 dark:text-black">
+            <div class="aspect-square bg-[url('./Screenshot_20240730_173608-1.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
+                <div class="bg-white w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7">
+                    <div><h2 class="font-semibold">Exquisite Escape</h2><p class="text-sm text-gray-700">Nuxt.js · Flight Booking</p></div>
+                    <a href="https://exquisite-escapenuxt.vercel.app" target="_blank" class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-lime-300 transition"><img src="./icons8-send-64.png" alt="" class="w-5"></a>
+                </div>
+            </div>
+            <div class="aspect-square bg-[url('./Screenshot_20240730_165328.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group bg-gradient-overlay">
                 <div class="bg-white w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7 z-10">
-                    <div>
-                        <h2 class="font-semibold">Frontend project</h2>
-                        <p class="text-sm text-gray-700">Web Design</p>
-                    </div>
-
-                    <div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-lime-300 transition">
-                        <img src="./icons8-send-64.png" alt="" class="w-5">
-                    </div>
+                    <div><h2 class="font-semibold">SyncU</h2><p class="text-sm text-gray-700">Laravel · Collaborative Platform</p></div>
+                    <a href="https://www.syncu.net/" target="_blank" class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-lime-300 transition"><img src="./icons8-send-64.png" alt="" class="w-5"></a>
                 </div>
             </div>
             <div class="aspect-square bg-[url('./Screenshot_20240730_173906.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
-        <div class="bg-white w-10/12 rounded-md absolute bottom-5 left-1/2 transform -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7 z-10">
-            <div>
-                <h2 class="font-semibold">Frontend project</h2>
-                <p class="text-sm text-gray-700">Web Design</p>
+                <div class="bg-white w-10/12 rounded-md absolute bottom-5 left-1/2 transform -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7 z-10">
+                    <div><h2 class="font-semibold">Tech-Care</h2><p class="text-sm text-gray-700">Vue.js · Health Records</p></div>
+                    <a href="https://tech-care-inky.vercel.app" target="_blank" class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-lime-300 transition"><img src="./icons8-send-64.png" alt="" class="w-5"></a>
+                </div>
             </div>
-            <div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-lime-300 transition">
-                <img src="./icons8-send-64.png" alt="" class="w-5">
-            </div>
-        </div>
-    </div>
             <div class="aspect-square bg-[url('./Screenshot_20240730_164427.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group bg-gradient-overlay">
-
                 <div class="bg-white w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7 z-10">
-                    <div>
-                        <h2 class="font-semibold">Frontend project</h2>
-                        <p class="text-sm text-gray-700">Web Design</p>
-                    </div>
-
-                    <div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-lime-300 transition">
-                        <img src="./icons8-send-64.png" alt="" class="w-5">
-                    </div>
+                    <div><h2 class="font-semibold">Jons World</h2><p class="text-sm text-gray-700">Nuxt.js · Organization Showcase</p></div>
+                    <a href="https://jons-liart.vercel.app" target="_blank" class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-lime-300 transition"><img src="./icons8-send-64.png" alt="" class="w-5"></a>
                 </div>
             </div>
         </div>
+        <a href="#" class="w-max flex items-center justify-center gap-2 text-gray-700 border-[0.5px] border-gray-700 rounded-full py-3 px-10 mx-auto my-20 hover:bg-lightHover duration-500 dark:text-white dark:border-white dark:hover:bg-[#2e2e2e]">Show more <img src="./right-arrow.png" alt="" class="w-4 dark:hidden"><img src="./icons8-right-arrow-64.png" alt="" class="w-4 hidden dark:block"></a>
+    </div>
 
-        <a href="#" class="w-max flex items-center justify-center gap-2 text-gray-700 border-[0.5px] border-gray-700 rounded-full py-3 px-10 mx-auto my-20 hover:bg-lightHover duration-500 dark:text-white dark:border-white dark:hover:bg-[#2e2e2e]">Show more 
-            <img src="./right-arrow.png" alt="" class="w-4 dark:hidden">
-            <img src="./icons8-right-arrow-64.png" alt="" class="w-4 hidden dark:block">
-
-        
-        </a>
-     </div>
-
-        <!-- contact section -->
-
-     <div id="contact" class="w-full px-[12%] py-10 scroll-mt-29 bg-center">
-        <h4 class="text-center mb-2 text-lg font-Ovo">Conect with me</h4>
+    <!-- ============ CONTACT ============ -->
+    <div id="contact" class="w-full px-[12%] py-10 scroll-mt-20 bg-center">
+        <h4 class="text-center mb-2 text-lg font-Ovo">Connect with me</h4>
         <h2 class="text-center text-5xl font-Ovo">Get in touch</h2>
-        <p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Ovo">I'd love to hear from you! if you have any questions, comments or feedback, please use the form below.</p>
-
-        <form method="post" action="https://api.web3forms.com/submit" class="max-w-2xl mx-auto ">
-
-             <input type="hidden" name="access_key" value="b8b78f65-a97c-444a-9612-ff12e080359b">
-
-            <div class="grid grid-cols-auto gap-6 mt-10 mb-8 ">
+        <p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Ovo">I'd love to hear from you! If you have any questions, comments or feedback, please use the form below.</p>
+        <form method="post" action="https://api.web3forms.com/submit" class="max-w-2xl mx-auto">
+            <input type="hidden" name="access_key" value="b8b78f65-a97c-444a-9612-ff12e080359b">
+            <div class="grid grid-cols-auto gap-6 mt-10 mb-8">
                 <input type="text" placeholder="Enter your name" name="name" class="flex-1 p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" required>
-
                 <input type="email" placeholder="Enter your email" name="email" class="flex-1 p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" required>
             </div>
-            <textarea id="" rows="6" placeholder="Enter your message" name="message" class="w-full p-4 outline-none border-[0.5px] border-gray-400 rounded-md bg-white mb-6 dark:bg-darkHover/30 dark:border-white/90" required>
-
-            </textarea>
-            <button class="py-3 px-8 w-max flex items-center justify-center gap-2 bg-black/80 text-white rounded-full mx-auto hover:bg-black duration-500 dark:bg-transparent dark:border-[0.5px] dark:hover:bg-darkHover">Submit now 
-                <img src="./icons8-right-arrow-64.png" alt="" class="w-4">
-            </button>
+            <textarea rows="6" placeholder="Enter your message" name="message" class="w-full p-4 outline-none border-[0.5px] border-gray-400 rounded-md bg-white mb-6 dark:bg-darkHover/30 dark:border-white/90" required></textarea>
+            <button class="py-3 px-8 w-max flex items-center justify-center gap-2 bg-black/80 text-white rounded-full mx-auto hover:bg-black duration-500 dark:bg-transparent dark:border-[0.5px] dark:hover:bg-darkHover">Submit now <img src="./icons8-right-arrow-64.png" alt="" class="w-4"></button>
         </form>
-     </div>
+    </div>
 
-
-     <!-- footer -->
-      <div class="mt-20 ">
+    <!-- ============ FOOTER ============ -->
+    <div class="mt-20">
         <div class="text-center">
             <img src="./output-onlinepngtools.png" alt="" class="w-28 mx-auto mb-2 dark:hidden">
             <img src="./pngwing.com.png" alt="" class="w-28 mx-auto mb-2 hidden dark:block">
-
-
-             <!-- <img src="./output-onlinepngtools.png" alt="logo" class="w-28 cursor-pointer mr-14 dark:hidden">
-        <img src="./pngwing.com.png" alt="logo" class="w-28 cursor-pointer mr-14 hidden dark:block"> -->
             <div class="w-max flex items-center gap-2 mx-auto">
                 <img src="./icons8-email-24.png" alt="" class="w-6 dark:hidden">
                 <img src="./outtput-onlinepngtools.png" alt="" class="w-6 hidden dark:block">
-                Chrisjosh087@gmail.com
+                chrisjosh087@gmail.com
             </div>
         </div>
         <div class="text-center sm:flex items-center justify-between border-t border-gray-400 mx-[10%] mt-12 py-6">
-            <p>2024 Joshkay. All rights reserved.</p>
+            <p>2025 Christopher Joshua. All rights reserved.</p>
             <ul class="flex items-center gap-10 justify-center mt-4 sm:mt-0">
-                <!-- <li><a href="https://facebook.com">Facebook</a></li> -->
-                 <li><a href="https://discord.com">Discord</a></li>
-                  <li><a href="https://www.linkedin.com/in/chris-josh-5a1850284">Linkedin</a></li>
-                   <li><a href="https://github.com/CeeJay33">Github</a></li>
+                <li><a href="https://discord.com">Discord</a></li>
+                <li><a href="https://www.linkedin.com/in/chris-josh-5a1850284">Linkedin</a></li>
+                <li><a href="https://github.com/CeeJay33">Github</a></li>
             </ul>
         </div>
-      </div>
+    </div>
+
+    <!-- ============ SCRIPTS ============ -->
+    <script>
+        // ===== CAROUSEL ENGINE =====
+        let currentSlide = 0;
+        const totalSlides = 6;
+        const track = document.getElementById('carouselTrack');
+        const counter = document.getElementById('carouselCounter');
+        const progressFill = document.getElementById('carouselProgressFill');
+        const dots = document.querySelectorAll('.carousel-dot');
+
+        function updateCarousel() {
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            counter.textContent = `0${currentSlide + 1} / 0${totalSlides}`;
+            progressFill.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+
+            dots.forEach((dot, i) => {
+                if (i === currentSlide) {
+                    dot.classList.add('active');
+                    dot.className = dot.className.replace('bg-gray-300 dark:bg-white/20', '');
+                    if (!dot.classList.contains('bg-gradient-to-r')) {
+                        dot.classList.add('bg-gradient-to-r', 'from-[#b820e6]', 'to-[#da7d20]');
+                    }
+                } else {
+                    dot.classList.remove('active', 'bg-gradient-to-r', 'from-[#b820e6]', 'to-[#da7d20]');
+                    if (!dot.classList.contains('bg-gray-300')) {
+                        dot.classList.add('bg-gray-300', 'dark:bg-white/20');
+                    }
+                }
+            });
+        }
+
+        function carouselNext() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        }
+
+        function carouselPrev() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+
+        function carouselGoTo(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+
+        // Touch / swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const viewport = document.querySelector('.carousel-viewport');
+
+        viewport.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        viewport.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) carouselNext();
+                else carouselPrev();
+            }
+        }, { passive: true });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') carouselNext();
+            if (e.key === 'ArrowLeft') carouselPrev();
+        });
+
+
+        // ===== MOBILE MENU =====
+        function openMenu() {
+            document.getElementById('sideMenu').style.right = '0';
+        }
+        function closeMenu() {
+            document.getElementById('sideMenu').style.right = '-16rem';
+        }
+
+        // ===== DARK MODE =====
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
-
-
-<!-- shadow-[0_4px_55px_rgba(149,0,162,0.15)] -->
