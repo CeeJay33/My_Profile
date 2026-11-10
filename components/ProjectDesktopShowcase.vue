@@ -2,15 +2,15 @@
   <section id="projects" class="relative border-t border-white/[0.06] bg-black">
     <!-- =======================================================================
          DESKTOP VIEW (lg: >= 1024px):
-         Single-screen stage (NO 520vh empty spacing!).
-         When you scroll into this section on desktop, vertical wheel scroll
-         locks in-place with ZERO window.scrollTo jitter, stepping cleanly:
-           Down: 01 -> 02 -> 03 -> 04 -> 05 -> 06 (then releases downward)
-           Up:   06 -> 05 -> 04 -> 03 -> 02 -> 01 (then releases upward)
+         Hard Scroll-Locked 100vh Stage.
+         The moment the page reaches this section on desktop, document.body
+         scroll is disabled (overflow: hidden) until you scroll through:
+           Down: 01 -> 02 -> 03 -> 04 -> 05 -> 06 (then unlocks downward)
+           Up:   06 -> 05 -> 04 -> 03 -> 02 -> 01 (then unlocks upward)
          ======================================================================= -->
     <div
       ref="desktopStageRef"
-      class="relative hidden min-h-screen w-full flex-col justify-center py-16 lg:flex"
+      class="relative hidden h-screen w-full flex-col justify-center overflow-hidden pt-12 lg:flex"
     >
       <div class="mx-auto w-full max-w-7xl px-8">
         <!-- Top Minimal Section Bar -->
@@ -22,6 +22,13 @@
             <span class="text-zinc-700">/</span>
             <span class="font-mono text-xs text-zinc-300">
               Scroll to morph projects ({{ String(activeIndex + 1).padStart(2, '0') }} of {{ String(projects.length).padStart(2, '0') }})
+            </span>
+            <span
+              v-if="isHardLocked"
+              class="ml-2 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-zinc-900 px-2.5 py-0.5 font-mono text-[10px] text-zinc-300"
+            >
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              <span>Scroll Locked ({{ activeIndex + 1 }}/{{ projects.length }})</span>
             </span>
           </div>
 
@@ -331,7 +338,6 @@
         <!-- Mobile macOS Screenshot Card -->
         <div class="mt-6 overflow-hidden rounded-2xl border border-white/12 bg-[#050507]">
           <div class="flex items-center justify-between border-b border-white/[0.08] bg-[#0B0B0E] px-3.5 py-2.5">
-            <!-- Authentic macOS Traffic Lights -->
             <div class="flex items-center gap-1.5">
               <span class="flex h-3 w-3 items-center justify-center rounded-full border border-[#E0443E] bg-[#FF5F56] text-[8px] font-bold leading-none text-[#4D0000]">
                 ×
@@ -394,7 +400,6 @@
             {{ mobileProject.summary }}
           </p>
 
-          <!-- Full Engineering Highlights List on Mobile -->
           <div class="mt-5 rounded-xl border border-white/[0.08] bg-[#070709] p-4">
             <div class="font-mono text-[10px] uppercase tracking-wider text-zinc-400">
               Key Engineering Highlights
@@ -411,7 +416,6 @@
             </ul>
           </div>
 
-          <!-- Specification Rows -->
           <div class="mt-5 divide-y divide-white/[0.07] border-y border-white/[0.07]">
             <div
               v-for="m in mobileProject.metrics"
@@ -426,7 +430,6 @@
             </div>
           </div>
 
-          <!-- Tech Stack -->
           <div class="mt-4 flex flex-wrap gap-1.5">
             <span
               v-for="tech in mobileProject.techStack"
@@ -437,7 +440,6 @@
             </span>
           </div>
 
-          <!-- Mobile CTA & Prev/Next Switcher -->
           <div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.08] pt-5">
             <div class="flex flex-wrap items-center gap-2.5">
               <a
@@ -538,83 +540,217 @@ import { usePortfolioData } from '~/composables/usePortfolioData'
 const { projects } = usePortfolioData()
 
 const desktopStageRef = ref<HTMLElement | null>(null)
-const activeIndex = ref(0) // Desktop: 0 -> 1 -> 2 -> 3 -> 4 -> 5 (and reverse 5 -> 4 -> 3 -> 2 -> 1 -> 0)
+const activeIndex = ref(0) // 0 -> 1 -> 2 -> 3 -> 4 -> 5 (and reverse 5 -> 4 -> 3 -> 2 -> 1 -> 0)
 const mobileIndex = ref(0)
 const showArchitecture = ref(false)
 const lightboxOpen = ref(false)
+const isHardLocked = ref(false)
 
 const projectScreenshots = computed(() => projects.map((p) => p.screenshot))
 const activeProject = computed(() => projects[activeIndex.value] || projects[0])
 const mobileProject = computed(() => projects[mobileIndex.value] || projects[0])
 
+let lastScrollY = 0
+let bypassLockUntil = 0
 let stepCooldownUntil = 0
 let wheelAccum = 0
 let lastWheelTs = 0
 
+function getSectionTop(): number {
+  if (!desktopStageRef.value) return 0
+  const rect = desktopStageRef.value.getBoundingClientRect()
+  return window.scrollY + rect.top
+}
+
 /**
- * Desktop-only wheel interceptor:
- * Never calls window.scrollTo() inside wheel (which caused the shake).
- * Instead, when the desktop stage is in the viewport, e.preventDefault() holds
- * the page motionless while stepping 01 -> 02 -> 03 -> 04 -> 05 -> 06 (down)
- * and 06 -> 05 -> 04 -> 03 -> 02 -> 01 (up).
+ * Engages a hard body scroll lock at the exact pixel top of Selected Work.
+ * Even dragging the scrollbar or fast momentum scrolling cannot move past this section
+ * until all 6 projects have been morphed through.
  */
+function engageHardLock() {
+  if (isHardLocked.value || window.innerWidth < 1024 || !desktopStageRef.value) return
+  const targetY = getSectionTop()
+  isHardLocked.value = true
+
+  // Compensate for scrollbar width so layout never shifts horizontally
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+  document.documentElement.style.scrollBehavior = 'auto'
+  window.scrollTo(0, targetY)
+  document.body.style.overflow = 'hidden'
+  if (scrollbarWidth > 0) {
+    document.body.style.paddingRight = `${scrollbarWidth}px`
+  }
+}
+
+function releaseHardLock(exitDirection: 1 | -1) {
+  if (!isHardLocked.value) return
+  const targetY = getSectionTop()
+  isHardLocked.value = false
+  bypassLockUntil = Date.now() + 700
+  wheelAccum = 0
+
+  document.body.style.overflow = ''
+  document.body.style.paddingRight = ''
+
+  // Nudge slightly past the threshold in the exit direction so normal scrolling resumes seamlessly
+  document.documentElement.style.scrollBehavior = 'auto'
+  window.scrollTo(0, targetY + exitDirection * 28)
+  lastScrollY = window.scrollY
+  requestAnimationFrame(() => {
+    document.documentElement.style.scrollBehavior = ''
+  })
+}
+
+function handleWindowScroll() {
+  if (window.innerWidth < 1024 || !desktopStageRef.value || lightboxOpen.value) {
+    lastScrollY = window.scrollY
+    return
+  }
+
+  const currentY = window.scrollY
+  const targetY = getSectionTop()
+
+  // If already hard-locked, keep scrollY pinned at targetY even if user drags scrollbar
+  if (isHardLocked.value) {
+    if (Math.abs(currentY - targetY) > 1) {
+      window.scrollTo(0, targetY)
+    }
+    return
+  }
+
+  if (Date.now() < bypassLockUntil) {
+    lastScrollY = currentY
+    return
+  }
+
+  const scrollingDown = currentY > lastScrollY
+  const scrollingUp = currentY < lastScrollY
+
+  // 1) Scrolling DOWN from Hero into Selected Work: lock if we haven't finished step 06
+  if (
+    scrollingDown &&
+    activeIndex.value < projects.length - 1 &&
+    lastScrollY < targetY + 10 &&
+    currentY >= targetY - 24
+  ) {
+    engageHardLock()
+    lastScrollY = targetY
+    return
+  }
+
+  // 2) Scrolling UP from Architecture into Selected Work: lock if we haven't returned to step 01
+  if (
+    scrollingUp &&
+    activeIndex.value > 0 &&
+    lastScrollY > targetY - 10 &&
+    currentY <= targetY + 24
+  ) {
+    engageHardLock()
+    lastScrollY = targetY
+    return
+  }
+
+  lastScrollY = currentY
+}
+
 function handleDesktopWheel(e: WheelEvent) {
-  // Strictly desktop (>= 1024px) and not when lightbox is open
   if (window.innerWidth < 1024 || !desktopStageRef.value || lightboxOpen.value) return
+
+  // If the user is right on the section and starts wheeling, ensure lock is engaged if needed
+  if (!isHardLocked.value && Date.now() >= bypassLockUntil) {
+    const rect = desktopStageRef.value.getBoundingClientRect()
+    const dir: 1 | -1 = e.deltaY > 0 ? 1 : -1
+    if (Math.abs(rect.top) <= 45) {
+      if ((dir > 0 && activeIndex.value < projects.length - 1) || (dir < 0 && activeIndex.value > 0)) {
+        engageHardLock()
+      }
+    }
+  }
+
+  if (!isHardLocked.value) return
+
+  e.preventDefault()
   if (Math.abs(e.deltaY) < 2) return
 
-  const rect = desktopStageRef.value.getBoundingClientRect()
-  const vh = window.innerHeight
   const direction: 1 | -1 = e.deltaY > 0 ? 1 : -1
-
-  // Is the desktop stage currently occupying the primary screen area?
-  const inLockZone =
-    direction > 0
-      ? rect.top <= 90 && rect.bottom >= vh * 0.72
-      : rect.top >= -120 && rect.top <= 130
-
-  if (!inLockZone) {
-    wheelAccum = 0
-    return
-  }
-
   const now = Date.now()
-  const canStepForward = direction > 0 && activeIndex.value < projects.length - 1
-  const canStepBackward = direction < 0 && activeIndex.value > 0
-  const inCooldown = now < stepCooldownUntil
 
-  if (!canStepForward && !canStepBackward && !inCooldown) {
-    // Reached 06 (scrolling down) or 01 (scrolling up) and cooldown finished -> release scroll!
-    wheelAccum = 0
-    return
-  }
-
-  // Stop vertical page movement completely without touching window.scrollTo (0px shake!)
-  e.preventDefault()
-
-  if (now - lastWheelTs > 200) {
+  if (now - lastWheelTs > 220) {
     wheelAccum = 0
   }
   lastWheelTs = now
 
-  if (inCooldown) return
+  // Wait for active shader morph cooldown before advancing to next step or unlocking
+  if (now < stepCooldownUntil) return
 
   wheelAccum += e.deltaY
-  if (Math.abs(wheelAccum) >= 26) {
-    const next = activeIndex.value + direction
-    if (next >= 0 && next <= projects.length - 1) {
-      activeIndex.value = next
-      stepCooldownUntil = now + 480
-    }
-    wheelAccum = 0
+  if (Math.abs(wheelAccum) < 26) return
+  wheelAccum = 0
+
+  // At step 06 and scrolling down -> unlock and continue down the page!
+  if (direction > 0 && activeIndex.value >= projects.length - 1) {
+    releaseHardLock(1)
+    return
+  }
+
+  // At step 01 and scrolling up -> unlock and continue up the page!
+  if (direction < 0 && activeIndex.value <= 0) {
+    releaseHardLock(-1)
+    return
+  }
+
+  // Otherwise step 01 -> 02 -> 03 -> 04 -> 05 -> 06 (or reverse 06 -> 05 -> 04 -> 03 -> 02 -> 01)
+  activeIndex.value = Math.max(0, Math.min(projects.length - 1, activeIndex.value + direction))
+  stepCooldownUntil = now + 520
+}
+
+function handleDesktopKeyDown(e: KeyboardEvent) {
+  if (!isHardLocked.value || window.innerWidth < 1024 || lightboxOpen.value) return
+  const downKeys = ['ArrowDown', 'PageDown', ' ']
+  const upKeys = ['ArrowUp', 'PageUp']
+  if (!downKeys.includes(e.key) && !upKeys.includes(e.key)) return
+
+  e.preventDefault()
+  const now = Date.now()
+  if (now < stepCooldownUntil) return
+
+  const direction: 1 | -1 = downKeys.includes(e.key) ? 1 : -1
+
+  if (direction > 0 && activeIndex.value >= projects.length - 1) {
+    releaseHardLock(1)
+    return
+  }
+  if (direction < 0 && activeIndex.value <= 0) {
+    releaseHardLock(-1)
+    return
+  }
+
+  activeIndex.value = Math.max(0, Math.min(projects.length - 1, activeIndex.value + direction))
+  stepCooldownUntil = now + 460
+}
+
+function handleResize() {
+  if (window.innerWidth < 1024 && isHardLocked.value) {
+    document.body.style.overflow = ''
+    document.body.style.paddingRight = ''
+    isHardLocked.value = false
   }
 }
 
 onMounted(() => {
+  lastScrollY = window.scrollY
+  window.addEventListener('scroll', handleWindowScroll, { passive: true })
   window.addEventListener('wheel', handleDesktopWheel, { passive: false })
+  window.addEventListener('keydown', handleDesktopKeyDown, { passive: false })
+  window.addEventListener('resize', handleResize, { passive: true })
 })
 
 onBeforeUnmount(() => {
+  document.body.style.overflow = ''
+  document.body.style.paddingRight = ''
+  window.removeEventListener('scroll', handleWindowScroll)
   window.removeEventListener('wheel', handleDesktopWheel)
+  window.removeEventListener('keydown', handleDesktopKeyDown)
+  window.removeEventListener('resize', handleResize)
 })
 </script>
