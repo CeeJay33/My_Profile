@@ -2,297 +2,303 @@
   <section id="projects" class="relative border-t border-white/[0.06] bg-black">
     <!-- =======================================================================
          DESKTOP VIEW (lg: >= 1024px):
-         Hard Scroll-Locked 100vh Stage.
-         The moment the page reaches this section on desktop, document.body
-         scroll is disabled (overflow: hidden) until you scroll through:
-           Down: 01 -> 02 -> 03 -> 04 -> 05 -> 06 (then unlocks downward)
-           Up:   06 -> 05 -> 04 -> 03 -> 02 -> 01 (then unlocks upward)
+         360vh Scroll-Surf Track with Explicit Pin State Machine:
+           - 'top'    (before reaching section): absolute top-0
+           - 'fixed'  (while surfing 01..06):    fixed top-0 left-0 right-0 (100% zero shake!)
+           - 'bottom' (after finishing 06):      absolute bottom-0 (zero empty gap below!)
+         The browser scrollbar NEVER disappears, dragging the scrollbar surfs
+         01 -> 02 -> 03 -> 04 -> 05 -> 06 and 06 -> 01 in reverse, and clicking
+         any navbar link scrolls naturally to its target section.
          ======================================================================= -->
     <div
-      ref="desktopStageRef"
-      class="relative hidden h-screen w-full flex-col justify-center overflow-hidden pt-12 lg:flex"
+      ref="desktopTrackRef"
+      class="relative hidden lg:block lg:h-[360vh]"
     >
-      <div class="mx-auto w-full max-w-7xl px-8">
-        <!-- Top Minimal Section Bar -->
-        <div class="mb-6 flex items-center justify-between border-b border-white/[0.08] pb-3.5">
-          <div class="flex items-center gap-3">
-            <span class="font-mono text-xs uppercase tracking-widest text-zinc-500">
-              Selected Work
-            </span>
-            <span class="text-zinc-700">/</span>
-            <span class="font-mono text-xs text-zinc-300">
-              Scroll to morph projects ({{ String(activeIndex + 1).padStart(2, '0') }} of {{ String(projects.length).padStart(2, '0') }})
-            </span>
-            <span
-              v-if="isHardLocked"
-              class="ml-2 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-zinc-900 px-2.5 py-0.5 font-mono text-[10px] text-zinc-300"
-            >
-              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              <span>Scroll Locked ({{ activeIndex + 1 }}/{{ projects.length }})</span>
-            </span>
-          </div>
-
-          <!-- Horizontal Step Scrubbers + Up/Down Step Buttons -->
-          <div class="flex items-center gap-3">
-            <div class="flex items-center gap-1.5">
-              <button
-                v-for="(proj, idx) in projects"
-                :key="proj.id"
-                type="button"
-                class="group flex items-center py-1.5 focus:outline-none"
-                :title="`0${idx + 1} · ${proj.title}`"
-                @click="activeIndex = idx"
-              >
-                <span
-                  class="h-1 rounded-full transition-all duration-300"
-                  :class="
-                    activeIndex === idx
-                      ? 'w-9 bg-white'
-                      : idx < activeIndex
-                        ? 'w-3 bg-zinc-500 group-hover:bg-zinc-300'
-                        : 'w-3 bg-zinc-800 group-hover:bg-zinc-600'
-                  "
-                />
-              </button>
+      <div
+        class="flex h-screen w-full flex-col justify-center overflow-hidden bg-black pt-12"
+        :class="
+          pinState === 'fixed'
+            ? 'fixed top-0 left-0 right-0 z-20'
+            : pinState === 'bottom'
+              ? 'absolute bottom-0 left-0 right-0 z-10'
+              : 'absolute top-0 left-0 right-0 z-10'
+        "
+      >
+        <div class="mx-auto w-full max-w-7xl px-8">
+          <!-- Top Minimal Section Bar -->
+          <div class="mb-6 flex items-center justify-between border-b border-white/[0.08] pb-3.5">
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-xs uppercase tracking-widest text-zinc-500">
+                Selected Work
+              </span>
+              <span class="text-zinc-700">/</span>
+              <span class="font-mono text-xs text-zinc-300">
+                Scroll to morph projects ({{ String(activeIndex + 1).padStart(2, '0') }} of {{ String(projects.length).padStart(2, '0') }})
+              </span>
             </div>
 
-            <div class="flex items-center gap-1 border-l border-white/10 pl-2.5">
-              <button
-                type="button"
-                :disabled="activeIndex === 0"
-                class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-zinc-950 text-zinc-300 transition hover:border-white/25 hover:text-white disabled:opacity-30"
-                title="Previous Project"
-                @click="activeIndex = Math.max(0, activeIndex - 1)"
-              >
-                <ChevronUp class="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
-                :disabled="activeIndex === projects.length - 1"
-                class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-zinc-950 text-zinc-300 transition hover:border-white/25 hover:text-white disabled:opacity-30"
-                title="Next Project"
-                @click="activeIndex = Math.min(projects.length - 1, activeIndex + 1)"
-              >
-                <ChevronDown class="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Desktop Stage: Fixed-Height Left Spec Column (zero layout shift) + Right macOS Browser Frame -->
-        <div class="grid grid-cols-12 items-center gap-12">
-          <!-- Left Column (5 cols): Fixed height container so text changes never shift layout -->
-          <div class="relative col-span-5 flex h-[480px] flex-col justify-between">
-            <!-- Vertical Step Progress Hairline on the far left -->
-            <div class="absolute -left-5 top-0 bottom-0 w-[1px] bg-zinc-900">
-              <div
-                class="w-full bg-white transition-[height] duration-300 ease-out"
-                :style="{ height: `${((activeIndex + 1) / projects.length) * 100}%` }"
-              />
-            </div>
-
-            <div>
-              <!-- Large Editorial Index Counter + Period -->
-              <div class="flex items-baseline justify-between">
-                <div class="flex items-baseline gap-2.5">
-                  <span class="font-display text-6xl font-light tracking-tighter text-white tabular-nums">
-                    {{ String(activeIndex + 1).padStart(2, '0') }}
-                  </span>
-                  <span class="font-mono text-xs text-zinc-600 tabular-nums">
-                    / {{ String(projects.length).padStart(2, '0') }}
-                  </span>
-                </div>
-                <span class="font-mono text-xs uppercase tracking-wider text-zinc-400">
-                  {{ activeProject.period }}
-                </span>
+            <!-- Horizontal Step Scrubbers + Up/Down Step Buttons -->
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-1.5">
+                <button
+                  v-for="(proj, idx) in projects"
+                  :key="proj.id"
+                  type="button"
+                  class="group flex items-center py-1.5 focus:outline-none"
+                  :title="`0${idx + 1} · ${proj.title}`"
+                  @click="scrollToStep(idx)"
+                >
+                  <span
+                    class="h-1 rounded-full transition-all duration-300"
+                    :class="
+                      activeIndex === idx
+                        ? 'w-9 bg-white'
+                        : idx < activeIndex
+                          ? 'w-3 bg-zinc-500 group-hover:bg-zinc-300'
+                          : 'w-3 bg-zinc-800 group-hover:bg-zinc-600'
+                    "
+                  />
+                </button>
               </div>
 
-              <!-- Project Details -->
-              <div class="mt-4">
-                <div class="font-mono text-[11px] uppercase tracking-widest text-zinc-500">
-                  {{ activeProject.role }} · {{ activeProject.category }}
+              <div class="flex items-center gap-1 border-l border-white/10 pl-2.5">
+                <button
+                  type="button"
+                  :disabled="activeIndex === 0"
+                  class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-zinc-950 text-zinc-300 transition hover:border-white/25 hover:text-white disabled:opacity-30"
+                  title="Previous Project"
+                  @click="scrollToStep(Math.max(0, activeIndex - 1))"
+                >
+                  <ChevronUp class="h-3.5 w-3.5" />
+                </button>
+                <button
+                  type="button"
+                  :disabled="activeIndex === projects.length - 1"
+                  class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-zinc-950 text-zinc-300 transition hover:border-white/25 hover:text-white disabled:opacity-30"
+                  title="Next Project"
+                  @click="scrollToStep(Math.min(projects.length - 1, activeIndex + 1))"
+                >
+                  <ChevronDown class="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Stage: Fixed-Height Left Spec Column (zero layout shift) + Right macOS Browser Frame -->
+          <div class="grid grid-cols-12 items-center gap-12">
+            <!-- Left Column (5 cols): Fixed height container so text changes never shift layout -->
+            <div class="relative col-span-5 flex h-[480px] flex-col justify-between">
+              <!-- Continuous Vertical Scroll Progress Hairline on the far left -->
+              <div class="absolute -left-5 top-0 bottom-0 w-[1px] bg-zinc-900">
+                <div
+                  class="w-full bg-white transition-[height] duration-75 ease-out"
+                  :style="{ height: `${Math.min(100, Math.max(8, scrollProgress * 100))}%` }"
+                />
+              </div>
+
+              <div>
+                <!-- Large Editorial Index Counter + Period -->
+                <div class="flex items-baseline justify-between">
+                  <div class="flex items-baseline gap-2.5">
+                    <span class="font-display text-6xl font-light tracking-tighter text-white tabular-nums">
+                      {{ String(activeIndex + 1).padStart(2, '0') }}
+                    </span>
+                    <span class="font-mono text-xs text-zinc-600 tabular-nums">
+                      / {{ String(projects.length).padStart(2, '0') }}
+                    </span>
+                  </div>
+                  <span class="font-mono text-xs uppercase tracking-wider text-zinc-400">
+                    {{ activeProject.period }}
+                  </span>
                 </div>
 
-                <h2 class="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-white">
-                  {{ activeProject.title.split('—')[0] }}
-                </h2>
-                <p class="mt-1 font-display text-sm font-medium text-zinc-400">
-                  {{ activeProject.title.split('—')[1] || activeProject.subtitle }}
-                </p>
+                <!-- Project Details -->
+                <div class="mt-4">
+                  <div class="font-mono text-[11px] uppercase tracking-widest text-zinc-500">
+                    {{ activeProject.role }} · {{ activeProject.category }}
+                  </div>
 
-                <p class="mt-3.5 line-clamp-4 text-sm leading-relaxed text-zinc-400">
-                  {{ activeProject.summary }}
-                </p>
+                  <h2 class="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-white">
+                    {{ activeProject.title.split('—')[0] }}
+                  </h2>
+                  <p class="mt-1 font-display text-sm font-medium text-zinc-400">
+                    {{ activeProject.title.split('—')[1] || activeProject.subtitle }}
+                  </p>
 
-                <!-- Clean Editorial Specification Rows -->
-                <div class="mt-5 divide-y divide-white/[0.07] border-y border-white/[0.07]">
-                  <div
-                    v-for="m in activeProject.metrics"
-                    :key="m.label"
-                    class="flex items-center justify-between py-2 text-xs"
-                  >
-                    <span class="font-mono text-[11px] uppercase text-zinc-500">{{ m.label }}</span>
-                    <div class="flex items-center gap-2">
-                      <span class="font-medium text-zinc-200">{{ m.value }}</span>
-                      <span class="font-mono text-[10px] text-zinc-500">({{ m.delta }})</span>
+                  <p class="mt-3.5 line-clamp-4 text-sm leading-relaxed text-zinc-400">
+                    {{ activeProject.summary }}
+                  </p>
+
+                  <!-- Clean Editorial Specification Rows -->
+                  <div class="mt-5 divide-y divide-white/[0.07] border-y border-white/[0.07]">
+                    <div
+                      v-for="m in activeProject.metrics"
+                      :key="m.label"
+                      class="flex items-center justify-between py-2 text-xs"
+                    >
+                      <span class="font-mono text-[11px] uppercase text-zinc-500">{{ m.label }}</span>
+                      <div class="flex items-center gap-2">
+                        <span class="font-medium text-zinc-200">{{ m.value }}</span>
+                        <span class="font-mono text-[10px] text-zinc-500">({{ m.delta }})</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <!-- Plain Minimal Tech List -->
-                <div class="mt-3.5 flex flex-wrap gap-x-2.5 gap-y-1 font-mono text-[11px] text-zinc-500">
-                  <span v-for="(tech, tIdx) in activeProject.techStack.slice(0, 7)" :key="tech">
-                    {{ tech }}<span v-if="tIdx < Math.min(activeProject.techStack.length, 7) - 1" class="ml-2.5 text-zinc-800">·</span>
-                  </span>
+                  <!-- Plain Minimal Tech List -->
+                  <div class="mt-3.5 flex flex-wrap gap-x-2.5 gap-y-1 font-mono text-[11px] text-zinc-500">
+                    <span v-for="(tech, tIdx) in activeProject.techStack.slice(0, 7)" :key="tech">
+                      {{ tech }}<span v-if="tIdx < Math.min(activeProject.techStack.length, 7) - 1" class="ml-2.5 text-zinc-800">·</span>
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Clean Monochrome Actions pinned to bottom of left column -->
-            <div class="flex flex-wrap items-center gap-3 pt-2">
-              <a
-                :href="activeProject.liveUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-xs font-semibold text-black transition hover:bg-zinc-200"
-              >
-                <span>Visit Live Product</span>
-                <ArrowUpRight class="h-3.5 w-3.5" />
-              </a>
-
-              <a
-                v-if="activeProject.secondaryUrl"
-                :href="activeProject.secondaryUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 rounded-lg border border-white/12 bg-zinc-950 px-3.5 py-2.5 text-xs font-medium text-zinc-300 transition hover:border-white/25 hover:text-white"
-              >
-                <span>{{ activeProject.secondaryLabel }}</span>
-                <ArrowUpRight class="h-3.5 w-3.5" />
-              </a>
-
-              <button
-                type="button"
-                class="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-transparent px-3.5 py-2.5 text-xs font-medium text-zinc-400 transition hover:border-white/20 hover:text-white"
-                @click="showArchitecture = !showArchitecture"
-              >
-                <span>{{ showArchitecture ? 'Show Screenshot' : 'Engineering Notes' }}</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Right Column (7 cols): True macOS Browser Frame with Three.js Shader -->
-          <div class="col-span-7">
-            <div class="overflow-hidden rounded-2xl border border-white/12 bg-[#050507] shadow-[0_30px_100px_rgba(0,0,0,0.95)]">
-              <!-- TRUE macOS Window Header -->
-              <div class="flex items-center justify-between border-b border-white/[0.08] bg-[#0B0B0E] px-4 py-2.5">
-                <div class="group/mac flex items-center gap-2">
-                  <!-- Close (Red #FF5F56) -->
-                  <button
-                    type="button"
-                    class="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#E0443E] bg-[#FF5F56] text-[#4D0000] shadow-inner transition focus:outline-none"
-                    title="Reset to Project 01"
-                    @click="activeIndex = 0"
-                  >
-                    <svg class="h-2 w-2 opacity-80 transition-opacity group-hover/mac:opacity-100" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-                      <path d="M2.5 2.5L7.5 7.5M7.5 2.5L2.5 7.5" />
-                    </svg>
-                  </button>
-
-                  <!-- Minimize (Yellow #FFBD2E) -->
-                  <button
-                    type="button"
-                    class="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#DEA123] bg-[#FFBD2E] text-[#5A3000] shadow-inner transition focus:outline-none"
-                    title="Toggle Engineering Notes"
-                    @click="showArchitecture = !showArchitecture"
-                  >
-                    <svg class="h-2 w-2 opacity-80 transition-opacity group-hover/mac:opacity-100" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-                      <path d="M2 5H8" />
-                    </svg>
-                  </button>
-
-                  <!-- Zoom / Expand (Green #27C93F) -->
-                  <button
-                    type="button"
-                    class="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#1AAB29] bg-[#27C93F] text-[#003B00] shadow-inner transition focus:outline-none"
-                    title="Expand Fullscreen Preview"
-                    @click="lightboxOpen = true"
-                  >
-                    <svg class="h-2 w-2 opacity-80 transition-opacity group-hover/mac:opacity-100" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M2.2 6.2L2.2 7.8L3.8 7.8M7.8 3.8L7.8 2.2L6.2 2.2M2.5 7.5L7.5 2.5" />
-                    </svg>
-                  </button>
-                </div>
-
-                <!-- Safari / Arc-style URL Bar -->
+              <!-- Clean Monochrome Actions pinned to bottom of left column -->
+              <div class="flex flex-wrap items-center gap-3 pt-2">
                 <a
                   :href="activeProject.liveUrl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="flex max-w-xs items-center gap-1.5 truncate rounded-md border border-white/[0.07] bg-black/90 px-3 py-1 font-mono text-[11px] text-zinc-400 transition hover:border-white/20 hover:text-white"
+                  class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-xs font-semibold text-black transition hover:bg-zinc-200"
                 >
-                  <Lock class="h-2.5 w-2.5 shrink-0 text-emerald-400" />
-                  <span class="truncate">{{ activeProject.liveUrl.replace('https://', '') }}</span>
+                  <span>Visit Live Product</span>
+                  <ArrowUpRight class="h-3.5 w-3.5" />
                 </a>
 
-                <!-- Right Fullscreen Icon -->
+                <a
+                  v-if="activeProject.secondaryUrl"
+                  :href="activeProject.secondaryUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 rounded-lg border border-white/12 bg-zinc-950 px-3.5 py-2.5 text-xs font-medium text-zinc-300 transition hover:border-white/25 hover:text-white"
+                >
+                  <span>{{ activeProject.secondaryLabel }}</span>
+                  <ArrowUpRight class="h-3.5 w-3.5" />
+                </a>
+
                 <button
                   type="button"
-                  class="inline-flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
-                  title="View Fullscreen Screenshot"
-                  @click="lightboxOpen = true"
+                  class="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-transparent px-3.5 py-2.5 text-xs font-medium text-zinc-400 transition hover:border-white/20 hover:text-white"
+                  @click="showArchitecture = !showArchitecture"
                 >
-                  <Maximize2 class="h-3.5 w-3.5" />
+                  <span>{{ showArchitecture ? 'Show Screenshot' : 'Engineering Notes' }}</span>
                 </button>
               </div>
+            </div>
 
-              <!-- 16:10 Desktop Viewport -->
-              <div class="relative aspect-[16/10] w-full overflow-hidden bg-black">
-                <ThreeShaderViewport
-                  v-show="!showArchitecture"
-                  :images="projectScreenshots"
-                  :active-index="activeIndex"
-                  :alt="activeProject.title"
-                />
+            <!-- Right Column (7 cols): True macOS Browser Frame with Three.js Shader -->
+            <div class="col-span-7">
+              <div class="overflow-hidden rounded-2xl border border-white/12 bg-[#050507] shadow-[0_30px_100px_rgba(0,0,0,0.95)]">
+                <!-- TRUE macOS Window Header -->
+                <div class="flex items-center justify-between border-b border-white/[0.08] bg-[#0B0B0E] px-4 py-2.5">
+                  <div class="group/mac flex items-center gap-2">
+                    <!-- Close (Red #FF5F56) -->
+                    <button
+                      type="button"
+                      class="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#E0443E] bg-[#FF5F56] text-[#4D0000] shadow-inner transition focus:outline-none"
+                      title="Reset to Project 01"
+                      @click="scrollToStep(0)"
+                    >
+                      <svg class="h-2 w-2 opacity-80 transition-opacity group-hover/mac:opacity-100" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                        <path d="M2.5 2.5L7.5 7.5M7.5 2.5L2.5 7.5" />
+                      </svg>
+                    </button>
 
-                <Transition name="page">
-                  <div
-                    v-if="showArchitecture"
-                    class="absolute inset-0 flex flex-col justify-between overflow-y-auto bg-black/95 p-8"
-                  >
-                    <div>
-                      <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                        <span class="font-mono text-xs uppercase tracking-wider text-zinc-400">
-                          Engineering &amp; Architecture Breakdown
-                        </span>
-                        <span class="font-mono text-xs text-zinc-500">{{ activeProject.period }}</span>
-                      </div>
-                      <ul class="mt-5 space-y-3">
-                        <li
-                          v-for="(item, idx) in activeProject.architectureHighlights"
-                          :key="idx"
-                          class="flex items-start gap-3 text-sm leading-relaxed text-zinc-300"
-                        >
-                          <span class="mt-0.5 font-mono text-xs text-zinc-500">0{{ idx + 1 }}</span>
-                          <span>{{ item }}</span>
-                        </li>
-                      </ul>
-                    </div>
+                    <!-- Minimize (Yellow #FFBD2E) -->
+                    <button
+                      type="button"
+                      class="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#DEA123] bg-[#FFBD2E] text-[#5A3000] shadow-inner transition focus:outline-none"
+                      title="Toggle Engineering Notes"
+                      @click="showArchitecture = !showArchitecture"
+                    >
+                      <svg class="h-2 w-2 opacity-80 transition-opacity group-hover/mac:opacity-100" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                        <path d="M2 5H8" />
+                      </svg>
+                    </button>
 
-                    <div class="mt-4 flex items-center justify-between border-t border-white/10 pt-3.5">
-                      <span class="font-mono text-[11px] text-zinc-500">
-                        Project {{ String(activeIndex + 1).padStart(2, '0') }} of {{ String(projects.length).padStart(2, '0') }}
-                      </span>
-                      <button
-                        type="button"
-                        class="rounded-lg bg-white px-3.5 py-1.5 text-xs font-semibold text-black"
-                        @click="showArchitecture = false"
-                      >
-                        Back to Desktop View
-                      </button>
-                    </div>
+                    <!-- Zoom / Expand (Green #27C93F) -->
+                    <button
+                      type="button"
+                      class="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#1AAB29] bg-[#27C93F] text-[#003B00] shadow-inner transition focus:outline-none"
+                      title="Expand Fullscreen Preview"
+                      @click="lightboxOpen = true"
+                    >
+                      <svg class="h-2 w-2 opacity-80 transition-opacity group-hover/mac:opacity-100" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2.2 6.2L2.2 7.8L3.8 7.8M7.8 3.8L7.8 2.2L6.2 2.2M2.5 7.5L7.5 2.5" />
+                      </svg>
+                    </button>
                   </div>
-                </Transition>
+
+                  <!-- Safari / Arc-style URL Bar -->
+                  <a
+                    :href="activeProject.liveUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex max-w-xs items-center gap-1.5 truncate rounded-md border border-white/[0.07] bg-black/90 px-3 py-1 font-mono text-[11px] text-zinc-400 transition hover:border-white/20 hover:text-white"
+                  >
+                    <Lock class="h-2.5 w-2.5 shrink-0 text-emerald-400" />
+                    <span class="truncate">{{ activeProject.liveUrl.replace('https://', '') }}</span>
+                  </a>
+
+                  <!-- Right Fullscreen Icon -->
+                  <button
+                    type="button"
+                    class="inline-flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
+                    title="View Fullscreen Screenshot"
+                    @click="lightboxOpen = true"
+                  >
+                    <Maximize2 class="h-3.5 w-3.5" />
+                  </button>
+                </div>
+
+                <!-- 16:10 Desktop Viewport -->
+                <div class="relative aspect-[16/10] w-full overflow-hidden bg-black">
+                  <ThreeShaderViewport
+                    v-show="!showArchitecture"
+                    :images="projectScreenshots"
+                    :active-index="activeIndex"
+                    :alt="activeProject.title"
+                  />
+
+                  <Transition name="page">
+                    <div
+                      v-if="showArchitecture"
+                      class="absolute inset-0 flex flex-col justify-between overflow-y-auto bg-black/95 p-8"
+                    >
+                      <div>
+                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                          <span class="font-mono text-xs uppercase tracking-wider text-zinc-400">
+                            Engineering &amp; Architecture Breakdown
+                          </span>
+                          <span class="font-mono text-xs text-zinc-500">{{ activeProject.period }}</span>
+                        </div>
+                        <ul class="mt-5 space-y-3">
+                          <li
+                            v-for="(item, idx) in activeProject.architectureHighlights"
+                            :key="idx"
+                            class="flex items-start gap-3 text-sm leading-relaxed text-zinc-300"
+                          >
+                            <span class="mt-0.5 font-mono text-xs text-zinc-500">0{{ idx + 1 }}</span>
+                            <span>{{ item }}</span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div class="mt-4 flex items-center justify-between border-t border-white/10 pt-3.5">
+                        <span class="font-mono text-[11px] text-zinc-500">
+                          Project {{ String(activeIndex + 1).padStart(2, '0') }} of {{ String(projects.length).padStart(2, '0') }}
+                        </span>
+                        <button
+                          type="button"
+                          class="rounded-lg bg-white px-3.5 py-1.5 text-xs font-semibold text-black"
+                          @click="showArchitecture = false"
+                        >
+                          Back to Desktop View
+                        </button>
+                      </div>
+                    </div>
+                  </Transition>
+                </div>
               </div>
             </div>
           </div>
@@ -307,7 +313,6 @@
          ======================================================================= -->
     <div class="py-16 lg:hidden">
       <div class="mx-auto max-w-3xl px-4 sm:px-6">
-        <!-- Mobile Header -->
         <div class="border-b border-white/[0.08] pb-4">
           <span class="font-mono text-[11px] uppercase tracking-widest text-zinc-500">
             Selected Work ({{ String(mobileIndex + 1).padStart(2, '0') }} of {{ String(projects.length).padStart(2, '0') }})
@@ -316,7 +321,6 @@
             Shipped Products &amp; Ecosystems
           </h2>
 
-          <!-- Tap-to-Select Project Pills (No scroll hijacking on mobile) -->
           <div class="mt-4 flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
             <button
               v-for="(proj, idx) in projects"
@@ -335,7 +339,6 @@
           </div>
         </div>
 
-        <!-- Mobile macOS Screenshot Card -->
         <div class="mt-6 overflow-hidden rounded-2xl border border-white/12 bg-[#050507]">
           <div class="flex items-center justify-between border-b border-white/[0.08] bg-[#0B0B0E] px-3.5 py-2.5">
             <div class="flex items-center gap-1.5">
@@ -382,7 +385,6 @@
           </div>
         </div>
 
-        <!-- Full Unclipped Mobile Description & Architecture Details -->
         <div class="mt-6">
           <div class="flex items-center justify-between font-mono text-xs text-zinc-400">
             <span>0{{ mobileIndex + 1 }} / 0{{ projects.length }} · {{ mobileProject.category }}</span>
@@ -539,218 +541,74 @@ import { usePortfolioData } from '~/composables/usePortfolioData'
 
 const { projects } = usePortfolioData()
 
-const desktopStageRef = ref<HTMLElement | null>(null)
-const activeIndex = ref(0) // 0 -> 1 -> 2 -> 3 -> 4 -> 5 (and reverse 5 -> 4 -> 3 -> 2 -> 1 -> 0)
+const desktopTrackRef = ref<HTMLElement | null>(null)
+const pinState = ref<'top' | 'fixed' | 'bottom'>('top')
+const scrollProgress = ref(0) // Continuous 0.0 to 1.0 driven by scrollbar or wheel
 const mobileIndex = ref(0)
 const showArchitecture = ref(false)
 const lightboxOpen = ref(false)
-const isHardLocked = ref(false)
 
 const projectScreenshots = computed(() => projects.map((p) => p.screenshot))
+
+// Maps scrollProgress (0.0 -> 1.0) cleanly across 0..5 (01 -> 02 -> 03 -> 04 -> 05 -> 06)
+const activeIndex = computed(() => {
+  const maxIdx = projects.length - 1
+  return Math.min(maxIdx, Math.max(0, Math.round(scrollProgress.value * maxIdx)))
+})
+
 const activeProject = computed(() => projects[activeIndex.value] || projects[0])
 const mobileProject = computed(() => projects[mobileIndex.value] || projects[0])
 
-let lastScrollY = 0
-let bypassLockUntil = 0
-let stepCooldownUntil = 0
-let wheelAccum = 0
-let lastWheelTs = 0
+function syncScrollPosition() {
+  if (!desktopTrackRef.value || window.innerWidth < 1024) return
+  const rect = desktopTrackRef.value.getBoundingClientRect()
+  const vh = window.innerHeight
+  const scrollableDistance = rect.height - vh
 
-function getSectionTop(): number {
-  if (!desktopStageRef.value) return 0
-  const rect = desktopStageRef.value.getBoundingClientRect()
-  return window.scrollY + rect.top
-}
+  if (scrollableDistance <= 0) {
+    pinState.value = 'top'
+    scrollProgress.value = 0
+    return
+  }
 
-/**
- * Engages a hard body scroll lock at the exact pixel top of Selected Work.
- * Even dragging the scrollbar or fast momentum scrolling cannot move past this section
- * until all 6 projects have been morphed through.
- */
-function engageHardLock() {
-  if (isHardLocked.value || window.innerWidth < 1024 || !desktopStageRef.value) return
-  const targetY = getSectionTop()
-  isHardLocked.value = true
-
-  // Compensate for scrollbar width so layout never shifts horizontally
-  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
-  document.documentElement.style.scrollBehavior = 'auto'
-  window.scrollTo(0, targetY)
-  document.body.style.overflow = 'hidden'
-  if (scrollbarWidth > 0) {
-    document.body.style.paddingRight = `${scrollbarWidth}px`
+  if (rect.top > 0) {
+    // Above the section
+    pinState.value = 'top'
+    scrollProgress.value = 0
+  } else if (rect.bottom < vh) {
+    // Scrolled past the section (stage sits flush at bottom-0 so there is zero empty space below!)
+    pinState.value = 'bottom'
+    scrollProgress.value = 1
+  } else {
+    // Inside the section: stage is fixed to the viewport while scrollbar/wheel surfs 01..06
+    pinState.value = 'fixed'
+    scrollProgress.value = Math.min(1, Math.max(0, -rect.top / scrollableDistance))
   }
 }
 
-function releaseHardLock(exitDirection: 1 | -1) {
-  if (!isHardLocked.value) return
-  const targetY = getSectionTop()
-  isHardLocked.value = false
-  bypassLockUntil = Date.now() + 700
-  wheelAccum = 0
-
-  document.body.style.overflow = ''
-  document.body.style.paddingRight = ''
-
-  // Nudge slightly past the threshold in the exit direction so normal scrolling resumes seamlessly
-  document.documentElement.style.scrollBehavior = 'auto'
-  window.scrollTo(0, targetY + exitDirection * 28)
-  lastScrollY = window.scrollY
-  requestAnimationFrame(() => {
-    document.documentElement.style.scrollBehavior = ''
+function scrollToStep(idx: number) {
+  if (!desktopTrackRef.value) return
+  const rect = desktopTrackRef.value.getBoundingClientRect()
+  const trackTop = window.scrollY + rect.top
+  const scrollableDistance = rect.height - window.innerHeight
+  const ratio = idx / Math.max(projects.length - 1, 1)
+  window.scrollTo({
+    top: trackTop + scrollableDistance * ratio,
+    behavior: 'smooth'
   })
 }
 
-function handleWindowScroll() {
-  if (window.innerWidth < 1024 || !desktopStageRef.value || lightboxOpen.value) {
-    lastScrollY = window.scrollY
-    return
-  }
-
-  const currentY = window.scrollY
-  const targetY = getSectionTop()
-
-  // If already hard-locked, keep scrollY pinned at targetY even if user drags scrollbar
-  if (isHardLocked.value) {
-    if (Math.abs(currentY - targetY) > 1) {
-      window.scrollTo(0, targetY)
-    }
-    return
-  }
-
-  if (Date.now() < bypassLockUntil) {
-    lastScrollY = currentY
-    return
-  }
-
-  const scrollingDown = currentY > lastScrollY
-  const scrollingUp = currentY < lastScrollY
-
-  // 1) Scrolling DOWN from Hero into Selected Work: lock if we haven't finished step 06
-  if (
-    scrollingDown &&
-    activeIndex.value < projects.length - 1 &&
-    lastScrollY < targetY + 10 &&
-    currentY >= targetY - 24
-  ) {
-    engageHardLock()
-    lastScrollY = targetY
-    return
-  }
-
-  // 2) Scrolling UP from Architecture into Selected Work: lock if we haven't returned to step 01
-  if (
-    scrollingUp &&
-    activeIndex.value > 0 &&
-    lastScrollY > targetY - 10 &&
-    currentY <= targetY + 24
-  ) {
-    engageHardLock()
-    lastScrollY = targetY
-    return
-  }
-
-  lastScrollY = currentY
-}
-
-function handleDesktopWheel(e: WheelEvent) {
-  if (window.innerWidth < 1024 || !desktopStageRef.value || lightboxOpen.value) return
-
-  // If the user is right on the section and starts wheeling, ensure lock is engaged if needed
-  if (!isHardLocked.value && Date.now() >= bypassLockUntil) {
-    const rect = desktopStageRef.value.getBoundingClientRect()
-    const dir: 1 | -1 = e.deltaY > 0 ? 1 : -1
-    if (Math.abs(rect.top) <= 45) {
-      if ((dir > 0 && activeIndex.value < projects.length - 1) || (dir < 0 && activeIndex.value > 0)) {
-        engageHardLock()
-      }
-    }
-  }
-
-  if (!isHardLocked.value) return
-
-  e.preventDefault()
-  if (Math.abs(e.deltaY) < 2) return
-
-  const direction: 1 | -1 = e.deltaY > 0 ? 1 : -1
-  const now = Date.now()
-
-  if (now - lastWheelTs > 220) {
-    wheelAccum = 0
-  }
-  lastWheelTs = now
-
-  // Wait for active shader morph cooldown before advancing to next step or unlocking
-  if (now < stepCooldownUntil) return
-
-  wheelAccum += e.deltaY
-  if (Math.abs(wheelAccum) < 26) return
-  wheelAccum = 0
-
-  // At step 06 and scrolling down -> unlock and continue down the page!
-  if (direction > 0 && activeIndex.value >= projects.length - 1) {
-    releaseHardLock(1)
-    return
-  }
-
-  // At step 01 and scrolling up -> unlock and continue up the page!
-  if (direction < 0 && activeIndex.value <= 0) {
-    releaseHardLock(-1)
-    return
-  }
-
-  // Otherwise step 01 -> 02 -> 03 -> 04 -> 05 -> 06 (or reverse 06 -> 05 -> 04 -> 03 -> 02 -> 01)
-  activeIndex.value = Math.max(0, Math.min(projects.length - 1, activeIndex.value + direction))
-  stepCooldownUntil = now + 520
-}
-
-function handleDesktopKeyDown(e: KeyboardEvent) {
-  if (!isHardLocked.value || window.innerWidth < 1024 || lightboxOpen.value) return
-  const downKeys = ['ArrowDown', 'PageDown', ' ']
-  const upKeys = ['ArrowUp', 'PageUp']
-  if (!downKeys.includes(e.key) && !upKeys.includes(e.key)) return
-
-  e.preventDefault()
-  const now = Date.now()
-  if (now < stepCooldownUntil) return
-
-  const direction: 1 | -1 = downKeys.includes(e.key) ? 1 : -1
-
-  if (direction > 0 && activeIndex.value >= projects.length - 1) {
-    releaseHardLock(1)
-    return
-  }
-  if (direction < 0 && activeIndex.value <= 0) {
-    releaseHardLock(-1)
-    return
-  }
-
-  activeIndex.value = Math.max(0, Math.min(projects.length - 1, activeIndex.value + direction))
-  stepCooldownUntil = now + 460
-}
-
-function handleResize() {
-  if (window.innerWidth < 1024 && isHardLocked.value) {
-    document.body.style.overflow = ''
-    document.body.style.paddingRight = ''
-    isHardLocked.value = false
-  }
-}
-
 onMounted(() => {
-  lastScrollY = window.scrollY
-  window.addEventListener('scroll', handleWindowScroll, { passive: true })
-  window.addEventListener('wheel', handleDesktopWheel, { passive: false })
-  window.addEventListener('keydown', handleDesktopKeyDown, { passive: false })
-  window.addEventListener('resize', handleResize, { passive: true })
+  // Ensure body overflow is never stuck hidden
+  document.body.style.overflow = ''
+  document.body.style.paddingRight = ''
+  syncScrollPosition()
+  window.addEventListener('scroll', syncScrollPosition, { passive: true })
+  window.addEventListener('resize', syncScrollPosition, { passive: true })
 })
 
 onBeforeUnmount(() => {
-  document.body.style.overflow = ''
-  document.body.style.paddingRight = ''
-  window.removeEventListener('scroll', handleWindowScroll)
-  window.removeEventListener('wheel', handleDesktopWheel)
-  window.removeEventListener('keydown', handleDesktopKeyDown)
-  window.removeEventListener('resize', handleResize)
+  window.removeEventListener('scroll', syncScrollPosition)
+  window.removeEventListener('resize', syncScrollPosition)
 })
 </script>
