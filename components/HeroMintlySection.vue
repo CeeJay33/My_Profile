@@ -17,12 +17,12 @@
 
           <!-- Crisp Headline -->
           <h1 class="font-display text-4xl font-semibold leading-[1.06] tracking-tight text-white sm:text-6xl">
-            Engineering production web &amp; mobile systems end-to-end.
+            Engineering production web &amp; mobile systems end to end.
           </h1>
 
-          <!-- Concise 2-Line Summary (No repetitive tech laundry list) -->
+          <!-- Concise 2-Line Summary -->
           <p class="mt-5 max-w-xl text-base leading-relaxed text-zinc-400 sm:text-lg">
-            5+ years taking full ownership across client and server — shipping cross-platform iOS &amp; Android apps, SSR storefronts, live GPS courier dispatch, and escrow payment engines.
+            5+ years building and shipping iOS and Android mobile apps, SSR web platforms, travel booking systems, enterprise portals, and real-time backend APIs.
           </p>
 
           <!-- Clean 2-Button CTA Row -->
@@ -68,7 +68,7 @@
                   Chris Joshua
                 </div>
                 <div class="mt-0.5 text-xs text-zinc-400">
-                  Technical Founder @ Xernee · Senior Engineer
+                  Senior Web &amp; Mobile Engineer
                 </div>
               </div>
             </div>

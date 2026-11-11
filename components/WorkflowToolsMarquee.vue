@@ -34,7 +34,7 @@
             :key="`top-${loopIdx}-${tool.id}`"
             class="group relative flex h-20 w-20 shrink-0 items-center justify-center rounded-[22px] border border-white/[0.09] transition-transform duration-300 hover:-translate-y-1 hover:border-white/25 sm:h-24 sm:w-24 sm:rounded-[26px]"
             :class="tool.tileClass"
-            :title="`${tool.name} — ${tool.role}`"
+            :title="`${tool.name} · ${tool.role}`"
           >
             <!-- Inner top specular sheen for authentic macOS dock icon look -->
             <div
@@ -71,7 +71,7 @@
             :key="`bottom-${loopIdx}-${tool.id}`"
             class="group relative flex h-20 w-20 shrink-0 items-center justify-center rounded-[22px] border border-white/[0.09] transition-transform duration-300 hover:-translate-y-1 hover:border-white/25 sm:h-24 sm:w-24 sm:rounded-[26px]"
             :class="tool.tileClass"
-            :title="`${tool.name} — ${tool.role}`"
+            :title="`${tool.name} · ${tool.role}`"
           >
             <div
               class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),0_14px_30px_rgba(0,0,0,0.85)]"

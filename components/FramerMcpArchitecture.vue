@@ -11,7 +11,7 @@
             How the pieces connect in production.
           </h2>
           <p class="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:text-base">
-            Select any layer in the pipeline to inspect how cross-platform mobile and SSR web clients interact with row-locked MySQL transactions, QR escrow handoffs, live Socket.io GPS telemetry, and Google Cloud Storage.
+            Select any layer below to inspect how I structure cross-platform mobile apps, SSR web frontends, REST APIs, real-time queues, relational databases, and cloud infrastructure.
           </p>
         </div>
       </div>
@@ -251,74 +251,83 @@ const nodes: ArchNode[] = [
   {
     id: 'rn-mobile',
     badge: 'React Native & Expo',
-    title: 'Cross-Platform Mobile Apps',
+    title: 'Cross Platform Mobile Apps',
     subtitle: 'iOS App Store & Google Play · EAS OTA',
     description:
-      'Production React Native and Expo mobile applications with native GPS tracking, QR camera scanners, AI wellness companions, and resilient offline-first HTTP clients.',
+      'Production React Native and Expo mobile applications across AI wellness companions, on-demand delivery, and mobile commerce with resilient HTTP clients and offline state persistence.',
     guarantees: [
-      'Shipped live on both Apple App Store and Google Play Store with EAS & Codemagic CI/CD.',
-      'Smooth 60fps navigation, local state persistence, and background location telemetry.',
-      'In-app QR code generation & camera scanning for cryptographic order handoff.'
+      'Shipped on Apple App Store and Google Play Store with EAS and Codemagic CI/CD.',
+      'Smooth 60fps navigation, local state persistence, and background location services.',
+      'In-app AI assistant check-ins, camera integrations, and QR code scanners.'
     ],
-    codeFile: 'mobile/services/dispatchSocket.ts',
-    codeSnippet: `socket.emit('courier:location:update', {
-  orderId,
-  coords: { lat: pos.latitude, lng: pos.longitude },
-  heading: pos.heading,
-  timestamp: Date.now()
-});`,
+    codeFile: 'mobile/services/httpClient.ts',
+    codeSnippet: `export async function requestWithRetry<T>(endpoint: string, init?: RequestInit): Promise<T> {
+  const token = await secureStore.getItemAsync('session_token');
+  const res = await fetch(\`\${API_BASE}\${endpoint}\`, {
+    ...init,
+    headers: { Authorization: \`Bearer \${token}\`, ...init?.headers }
+  });
+  return res.json();
+}`,
     highlightedLines: [
-      `<span class="text-[#79C0FF]">socket</span>.<span class="text-[#D2A8FF]">emit</span>(<span class="text-[#A5D6FF]">'courier:location:update'</span>, {`,
-      `  <span class="text-[#FFA657]">orderId</span>,`,
-      `  <span class="text-[#79C0FF]">coords</span>: { <span class="text-[#79C0FF]">lat</span>: <span class="text-[#FFA657]">pos</span>.<span class="text-[#79C0FF]">latitude</span>, <span class="text-[#79C0FF]">lng</span>: <span class="text-[#FFA657]">pos</span>.<span class="text-[#79C0FF]">longitude</span> },`,
-      `  <span class="text-[#79C0FF]">heading</span>: <span class="text-[#FFA657]">pos</span>.<span class="text-[#79C0FF]">heading</span>,`,
-      `  <span class="text-[#79C0FF]">timestamp</span>: <span class="text-[#79C0FF]">Date</span>.<span class="text-[#D2A8FF]">now</span>()`,
-      `});`
+      `<span class="text-[#FF7B72]">export async function</span> <span class="text-[#D2A8FF]">requestWithRetry</span>&lt;<span class="text-[#79C0FF]">T</span>&gt;(<span class="text-[#FFA657]">endpoint</span>: <span class="text-[#79C0FF]">string</span>): <span class="text-[#79C0FF]">Promise</span>&lt;<span class="text-[#79C0FF]">T</span>&gt; {`,
+      `  <span class="text-[#FF7B72]">const</span> <span class="text-[#79C0FF]">token</span> = <span class="text-[#FF7B72]">await</span> <span class="text-[#79C0FF]">secureStore</span>.<span class="text-[#D2A8FF]">getItemAsync</span>(<span class="text-[#A5D6FF]">'session_token'</span>);`,
+      `  <span class="text-[#FF7B72]">const</span> <span class="text-[#79C0FF]">res</span> = <span class="text-[#FF7B72]">await</span> <span class="text-[#D2A8FF]">fetch</span>(<span class="text-[#A5D6FF]">\`\${</span><span class="text-[#79C0FF]">API_BASE</span><span class="text-[#A5D6FF]">}\${</span><span class="text-[#FFA657]">endpoint</span><span class="text-[#A5D6FF]">}\`</span>, {`,
+      `    <span class="text-[#79C0FF]">headers</span>: { <span class="text-[#79C0FF]">Authorization</span>: <span class="text-[#A5D6FF]">\`Bearer \${</span><span class="text-[#79C0FF]">token</span><span class="text-[#A5D6FF]">}\`</span> }`,
+      `  });`,
+      `  <span class="text-[#FF7B72]">return</span> <span class="text-[#79C0FF]">res</span>.<span class="text-[#D2A8FF]">json</span>();`,
+      `}`
     ]
   },
   {
     id: 'nuxt-web',
     badge: 'Nuxt 3 & Vue 3 SSR',
-    title: 'SSR Storefronts & Merchant Portals',
-    subtitle: 'Nuxt 3 · TanStack Query · 2FA Sessions',
+    title: 'SSR Web & GDS Booking Frontends',
+    subtitle: 'Nuxt 3 · Amadeus GDS · Enterprise Portals',
     description:
-      'Server-Side Rendered (SSR) Nuxt 3 web storefronts, Amadeus travel booking engines, and real-time merchant dashboards with authenticator 2FA protection.',
+      'Server-Side Rendered Nuxt 3 applications powering Amadeus GDS flight and hotel search, enterprise client order portals, clinical dashboards, and web storefronts.',
     guarantees: [
-      'Fast First Contentful Paint (FCP) and SEO indexing via Nuxt 3 SSR on Vercel & GCP.',
-      'Live Socket.io scan status synchronization on merchant dashboards when couriers scan QR codes.',
-      'Authenticator Two-Factor Authentication (2FA) protecting sensitive payout & store actions.'
+      'Fast initial page load and SEO indexing via Nuxt 3 SSR deployed on Vercel and GCP.',
+      'Amadeus GDS API integration for live flight routes, cabin classes, and fare pricing.',
+      'Responsive dashboards for clinical vital-sign telemetry and enterprise print workflows.'
     ],
-    codeFile: 'web/composables/useEscrowLiveSync.ts',
-    codeSnippet: `socket.on('order:qr_collected', ({ orderId, payoutStatus }) => {
-  queryClient.invalidateQueries(['merchant-orders', orderId]);
-  notify(\`QR Scanned · Escrow Released (\${payoutStatus})\`);
-});`,
+    codeFile: 'web/composables/useFlightSearch.ts',
+    codeSnippet: `export const searchLiveFlights = async (query: FlightSearchQuery) => {
+  const { data } = await useFetch('/api/amadeus/flights/offers', {
+    method: 'POST',
+    body: { origin: query.from, destination: query.to, date: query.departure }
+  });
+  return data.value?.offers ?? [];
+};`,
     highlightedLines: [
-      `<span class="text-[#79C0FF]">socket</span>.<span class="text-[#D2A8FF]">on</span>(<span class="text-[#A5D6FF]">'order:qr_collected'</span>, ({ <span class="text-[#FFA657]">orderId</span>, <span class="text-[#FFA657]">payoutStatus</span> }) <span class="text-[#FF7B72]">=&gt;</span> {`,
-      `  <span class="text-[#79C0FF]">queryClient</span>.<span class="text-[#D2A8FF]">invalidateQueries</span>([<span class="text-[#A5D6FF]">'merchant-orders'</span>, <span class="text-[#FFA657]">orderId</span>]);`,
-      `  <span class="text-[#D2A8FF]">notify</span>(<span class="text-[#A5D6FF]">\`QR Scanned · Escrow Released (\${</span><span class="text-[#FFA657]">payoutStatus</span><span class="text-[#A5D6FF]">})\`</span>);`,
-      `});`
+      `<span class="text-[#FF7B72]">export const</span> <span class="text-[#D2A8FF]">searchLiveFlights</span> = <span class="text-[#FF7B72]">async</span> (<span class="text-[#FFA657]">query</span>: <span class="text-[#79C0FF]">FlightSearchQuery</span>) <span class="text-[#FF7B72]">=&gt;</span> {`,
+      `  <span class="text-[#FF7B72]">const</span> { <span class="text-[#79C0FF]">data</span> } = <span class="text-[#FF7B72]">await</span> <span class="text-[#D2A8FF]">useFetch</span>(<span class="text-[#A5D6FF]">'/api/amadeus/flights/offers'</span>, {`,
+      `    <span class="text-[#79C0FF]">method</span>: <span class="text-[#A5D6FF]">'POST'</span>,`,
+      `    <span class="text-[#79C0FF]">body</span>: { <span class="text-[#79C0FF]">origin</span>: <span class="text-[#FFA657]">query</span>.<span class="text-[#79C0FF]">from</span>, <span class="text-[#79C0FF]">destination</span>: <span class="text-[#FFA657]">query</span>.<span class="text-[#79C0FF]">to</span> }`,
+      `  });`,
+      `  <span class="text-[#FF7B72]">return</span> <span class="text-[#79C0FF]">data</span>.<span class="text-[#79C0FF]">value</span>?.<span class="text-[#79C0FF]">offers</span> ?? [];`,
+      `};`
     ]
   },
   {
     id: 'qr-escrow',
-    badge: 'QR Proof & Escrow',
-    title: 'QR Code Escrow & Payment Integrity',
-    subtitle: 'Node.js · Express · Idempotency · Webhooks',
+    badge: 'Node.js & Express APIs',
+    title: 'REST APIs, Payments & Security',
+    subtitle: 'Node.js · Express · Idempotency · RBAC',
     description:
-      'Holds buyer funds in escrow at checkout and releases payouts to merchants and couriers strictly when the pickup or delivery QR token is cryptographically verified.',
+      'Backend API architecture handling role-based authentication, digital ePIN generation, escrow payment verification, and strict request validation.',
     guarantees: [
-      'Pickup confirmed strictly on seller QR scan; manual bypasses blocked (403 QR_SCAN_REQUIRED).',
-      'Server-side price validation, idempotency keys, and HMAC webhook signature verification.',
-      'Automated Paystack transfers to merchants on pickup and couriers on buyer delivery confirmation.'
+      'Server-side input validation, idempotency keys, and HMAC webhook signature verification.',
+      'Cryptographic token verification for digital ePIN issuance and QR order handoffs.',
+      'Role-based access control (RBAC) and 2FA session security for sensitive operations.'
     ],
-    codeFile: 'backend/controllers/qrCollectController.js',
+    codeFile: 'backend/controllers/paymentController.js',
     codeSnippet: `await conn.beginTransaction();
 const [order] = await conn.query(
   'SELECT * FROM orders WHERE id = ? FOR UPDATE', [orderId]
 );
 if (order.qr_hash !== signedToken) throw new ForbiddenError();
-await releaseMerchantEscrow(conn, order);
+await settleVerifiedOrder(conn, order);
 await conn.commit();`,
     highlightedLines: [
       `<span class="text-[#FF7B72]">await</span> <span class="text-[#79C0FF]">conn</span>.<span class="text-[#D2A8FF]">beginTransaction</span>();`,
@@ -326,81 +335,81 @@ await conn.commit();`,
       `  <span class="text-[#A5D6FF]">'SELECT * FROM orders WHERE id = ? FOR UPDATE'</span>, [<span class="text-[#FFA657]">orderId</span>]`,
       `);`,
       `<span class="text-[#FF7B72]">if</span> (<span class="text-[#79C0FF]">order</span>.<span class="text-[#79C0FF]">qr_hash</span> <span class="text-[#FF7B72]">!==</span> <span class="text-[#FFA657]">signedToken</span>) <span class="text-[#FF7B72]">throw new</span> <span class="text-[#D2A8FF]">ForbiddenError</span>();`,
-      `<span class="text-[#FF7B72]">await</span> <span class="text-[#D2A8FF]">releaseMerchantEscrow</span>(<span class="text-[#79C0FF]">conn</span>, <span class="text-[#79C0FF]">order</span>);`,
+      `<span class="text-[#FF7B72]">await</span> <span class="text-[#D2A8FF]">settleVerifiedOrder</span>(<span class="text-[#79C0FF]">conn</span>, <span class="text-[#79C0FF]">order</span>);`,
       `<span class="text-[#FF7B72]">await</span> <span class="text-[#79C0FF]">conn</span>.<span class="text-[#D2A8FF]">commit</span>();`
     ]
   },
   {
     id: 'gps-bullmq',
     badge: 'Socket.io & BullMQ',
-    title: 'Live GPS Tracking & Courier Dispatch',
+    title: 'Real Time Events & Job Queues',
     subtitle: 'Redis Pub/Sub · BullMQ Workers · WebSockets',
     description:
-      'On-demand local courier dispatch engine calculating distance-based pricing, verifying courier collateral, and matching orders to nearby online couriers via background queues.',
+      'Event-driven background workers and WebSocket channels for live GPS telemetry, instant dashboard notifications, and asynchronous task processing.',
     guarantees: [
-      'BullMQ + Redis job queues match orders to nearby online couriers with automatic fallback retries.',
-      'Real-time WebSocket GPS streaming between courier mobile app, buyer, and merchant portal.',
-      'Collateral threshold enforcement before dispatching high-value merchandise.'
+      'BullMQ and Redis queues process background jobs with automatic retry policies.',
+      'Low-latency Socket.io channels sync live status updates across mobile and web clients.',
+      'Decoupled worker processes keep HTTP API response times fast under load.'
     ],
     codeFile: 'backend/queues/dispatchWorker.js',
-    codeSnippet: `export const dispatchWorker = new Worker('courier-dispatch', async (job) => {
-  const couriers = await findNearbyEligibleCouriers(job.data.pickupCoords);
-  await notifyCourierBatchViaSocket(couriers, job.data.orderId);
+    codeSnippet: `export const dispatchWorker = new Worker('background-jobs', async (job) => {
+  const candidates = await matchEligibleWorkers(job.data.coordinates);
+  await broadcastRealtimeEvent(candidates, job.data.referenceId);
 }, { connection: redisConnection });`,
     highlightedLines: [
-      `<span class="text-[#FF7B72]">export const</span> <span class="text-[#79C0FF]">dispatchWorker</span> = <span class="text-[#FF7B72]">new</span> <span class="text-[#D2A8FF]">Worker</span>(<span class="text-[#A5D6FF]">'courier-dispatch'</span>, <span class="text-[#FF7B72]">async</span> (<span class="text-[#FFA657]">job</span>) <span class="text-[#FF7B72]">=&gt;</span> {`,
-      `  <span class="text-[#FF7B72]">const</span> <span class="text-[#79C0FF]">couriers</span> = <span class="text-[#FF7B72]">await</span> <span class="text-[#D2A8FF]">findNearbyEligibleCouriers</span>(<span class="text-[#FFA657]">job</span>.<span class="text-[#79C0FF]">data</span>.<span class="text-[#79C0FF]">pickupCoords</span>);`,
-      `  <span class="text-[#FF7B72]">await</span> <span class="text-[#D2A8FF]">notifyCourierBatchViaSocket</span>(<span class="text-[#79C0FF]">couriers</span>, <span class="text-[#FFA657]">job</span>.<span class="text-[#79C0FF]">data</span>.<span class="text-[#79C0FF]">orderId</span>);`,
+      `<span class="text-[#FF7B72]">export const</span> <span class="text-[#79C0FF]">dispatchWorker</span> = <span class="text-[#FF7B72]">new</span> <span class="text-[#D2A8FF]">Worker</span>(<span class="text-[#A5D6FF]">'background-jobs'</span>, <span class="text-[#FF7B72]">async</span> (<span class="text-[#FFA657]">job</span>) <span class="text-[#FF7B72]">=&gt;</span> {`,
+      `  <span class="text-[#FF7B72]">const</span> <span class="text-[#79C0FF]">candidates</span> = <span class="text-[#FF7B72]">await</span> <span class="text-[#D2A8FF]">matchEligibleWorkers</span>(<span class="text-[#FFA657]">job</span>.<span class="text-[#79C0FF]">data</span>.<span class="text-[#79C0FF]">coordinates</span>);`,
+      `  <span class="text-[#FF7B72]">await</span> <span class="text-[#D2A8FF]">broadcastRealtimeEvent</span>(<span class="text-[#79C0FF]">candidates</span>, <span class="text-[#FFA657]">job</span>.<span class="text-[#79C0FF]">data</span>.<span class="text-[#79C0FF]">referenceId</span>);`,
       `}, { <span class="text-[#79C0FF]">connection</span>: <span class="text-[#FFA657]">redisConnection</span> });`
     ]
   },
   {
     id: 'sql-concurrency',
     badge: 'MySQL Relational DB',
-    title: 'Relational Schemas & Row Locking',
-    subtitle: 'ACID Transactions · Zero Stock Overselling',
+    title: 'Relational Schemas & Query Tuning',
+    subtitle: 'ACID Transactions · Indexing · Migrations',
     description:
-      'Relational MySQL schema architecture, structured migrations, query optimization, and pessimistic/optimistic concurrency controls.',
+      'Relational MySQL database design, schema migrations, SQL query optimization, and transactional row locking across enterprise and commerce workloads.',
     guarantees: [
-      'MySQL database transactions and row locking prevent concurrent checkout stock overselling.',
-      'Optimized composite indexing and SQL query plans for low-latency API responses.',
-      'Immutable audit logs for financial ePIN purchases, escrow state transitions, and payouts.'
+      'ACID database transactions and row locking prevent concurrent race conditions.',
+      'Composite indexing and query refactoring to reduce API latency on production tables.',
+      'Structured audit logs for financial transactions, client orders, and clinical records.'
     ],
     codeFile: 'backend/services/inventoryService.js',
-    codeSnippet: `const [product] = await tx.query(
-  'SELECT stock, price FROM products WHERE id = ? FOR UPDATE',
-  [productId]
+    codeSnippet: `const [record] = await tx.query(
+  'SELECT stock, unit_price FROM catalog_items WHERE id = ? FOR UPDATE',
+  [itemId]
 );
-if (product.stock < qty) throw new ConflictError('INSUFFICIENT_STOCK');`,
+if (record.stock < qty) throw new ConflictError('INSUFFICIENT_INVENTORY');`,
     highlightedLines: [
-      `<span class="text-[#FF7B72]">const</span> [<span class="text-[#79C0FF]">product</span>] = <span class="text-[#FF7B72]">await</span> <span class="text-[#79C0FF]">tx</span>.<span class="text-[#D2A8FF]">query</span>(`,
-      `  <span class="text-[#A5D6FF]">'SELECT stock, price FROM products WHERE id = ? FOR UPDATE'</span>,`,
-      `  [<span class="text-[#FFA657]">productId</span>]`,
+      `<span class="text-[#FF7B72]">const</span> [<span class="text-[#79C0FF]">record</span>] = <span class="text-[#FF7B72]">await</span> <span class="text-[#79C0FF]">tx</span>.<span class="text-[#D2A8FF]">query</span>(`,
+      `  <span class="text-[#A5D6FF]">'SELECT stock, unit_price FROM catalog_items WHERE id = ? FOR UPDATE'</span>,`,
+      `  [<span class="text-[#FFA657]">itemId</span>]`,
       `);`,
-      `<span class="text-[#FF7B72]">if</span> (<span class="text-[#79C0FF]">product</span>.<span class="text-[#79C0FF]">stock</span> &lt; <span class="text-[#FFA657]">qty</span>) <span class="text-[#FF7B72]">throw new</span> <span class="text-[#D2A8FF]">ConflictError</span>(<span class="text-[#A5D6FF]">'INSUFFICIENT_STOCK'</span>);`
+      `<span class="text-[#FF7B72]">if</span> (<span class="text-[#79C0FF]">record</span>.<span class="text-[#79C0FF]">stock</span> &lt; <span class="text-[#FFA657]">qty</span>) <span class="text-[#FF7B72]">throw new</span> <span class="text-[#D2A8FF]">ConflictError</span>(<span class="text-[#A5D6FF]">'INSUFFICIENT_INVENTORY'</span>);`
     ]
   },
   {
     id: 'gcp-security',
-    badge: 'Google Cloud (GCP)',
-    title: 'GCS Media Streaming & Signed URLs',
-    subtitle: 'Google Cloud Storage · Expiring KYC Links · Docker',
+    badge: 'Google Cloud & CI/CD',
+    title: 'Cloud Storage, Signed URLs & Deployments',
+    subtitle: 'Google Cloud Storage · Docker · EAS & Vercel',
     description:
-      'Cloud infrastructure on Google Cloud Platform (GCP) handling seller story video/image streaming and zero-trust expiring signed URLs for private verification documents.',
+      'Cloud infrastructure on Google Cloud Platform (GCP), expiring V4 signed URLs for private files, containerized Linux services, and automated CI/CD pipelines.',
     guarantees: [
-      'Expiring V4 Signed URLs on Google Cloud Storage (GCS) for private identity/KYC documents.',
-      'High-throughput media upload pipelines for Seller Stories and AI product detection.',
-      'Containerized Linux & Docker deployments with automated zero-downtime rollouts.'
+      'Expiring V4 Signed URLs on Google Cloud Storage (GCS) for private documents and media.',
+      'Automated mobile builds via Expo EAS and Codemagic alongside Vercel SSR deployments.',
+      'Containerized Linux and Docker environments with zero-downtime release workflows.'
     ],
     codeFile: 'backend/utils/gcsSignedUrl.js',
     codeSnippet: `const [signedUrl] = await storage
   .bucket(process.env.GCS_PRIVATE_BUCKET)
-  .file(kycDocumentPath)
+  .file(documentPath)
   .getSignedUrl({ version: 'v4', action: 'read', expires: Date.now() + 900_000 });`,
     highlightedLines: [
       `<span class="text-[#FF7B72]">const</span> [<span class="text-[#79C0FF]">signedUrl</span>] = <span class="text-[#FF7B72]">await</span> <span class="text-[#79C0FF]">storage</span>`,
       `  .<span class="text-[#D2A8FF]">bucket</span>(<span class="text-[#79C0FF]">process</span>.<span class="text-[#79C0FF]">env</span>.<span class="text-[#FFA657]">GCS_PRIVATE_BUCKET</span>)`,
-      `  .<span class="text-[#D2A8FF]">file</span>(<span class="text-[#FFA657]">kycDocumentPath</span>)`,
+      `  .<span class="text-[#D2A8FF]">file</span>(<span class="text-[#FFA657]">documentPath</span>)`,
       `  .<span class="text-[#D2A8FF]">getSignedUrl</span>({ <span class="text-[#79C0FF]">version</span>: <span class="text-[#A5D6FF]">'v4'</span>, <span class="text-[#79C0FF]">action</span>: <span class="text-[#A5D6FF]">'read'</span>, <span class="text-[#79C0FF]">expires</span>: <span class="text-[#79C0FF]">Date</span>.<span class="text-[#D2A8FF]">now</span>() + <span class="text-[#79C0FF]">900_000</span> });`
     ]
   }
@@ -408,8 +417,8 @@ if (product.stock < qty) throw new ConflictError('INSUFFICIENT_STOCK');`,
 
 const tiers = computed(() => [
   { label: '01 / Client & Mobile Presentation', items: nodes.slice(0, 2) },
-  { label: '02 / API Gateway, Escrow & Dispatch', items: nodes.slice(2, 4) },
-  { label: '03 / Relational MySQL & Cloud Storage', items: nodes.slice(4, 6) }
+  { label: '02 / API Layer & Real Time Workers', items: nodes.slice(2, 4) },
+  { label: '03 / Relational MySQL & Cloud Infrastructure', items: nodes.slice(4, 6) }
 ])
 
 const activeNode = ref<ArchNode>(nodes[3]) // Default to dispatchWorker.js so the user immediately sees the highlighted code!

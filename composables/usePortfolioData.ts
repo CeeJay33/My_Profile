@@ -61,7 +61,7 @@ export const usePortfolioData = () => {
     location: 'Lagos, Nigeria · Global Remote (EST / GMT Overlap)',
     cvUrl: '/Chris_Joshua_CV.pdf',
     personalStatement:
-      'Senior Web and Mobile Engineer with over 5 years of experience designing, building, and shipping production web and mobile applications across local delivery, online commerce, live GPS tracking, and digital payments. Experienced in taking full ownership of features on both the server and client using React Native, React, Vue and Nuxt, Node.js, Express, MySQL, Redis, Socket.io, and Google Cloud Platform (GCP). Skilled at working with greenfield and existing codebases, managing relational database schemas, building reliable REST APIs and HTTP clients, and collaborating in daily team discussions.'
+      'Senior Web and Mobile Engineer with over 5 years of experience designing, building, and shipping production web and mobile applications across consumer mobile apps, travel booking systems, enterprise portals, local delivery, and digital payments.'
   }
 
   const portfolioTelemetry = [
@@ -69,34 +69,34 @@ export const usePortfolioData = () => {
       id: 'exp',
       label: 'PRODUCTION ENGINEERING',
       value: '5+ Years',
-      subValue: 'Full-Stack & Cross-Platform Mobile',
-      delta: '+100% Ownership',
+      subValue: 'Full Stack & Mobile',
+      delta: '100% Ownership',
       sparkline: [28, 35, 42, 50, 64, 78, 92, 100],
       color: '#00FFA3'
     },
     {
       id: 'apps',
-      label: 'SHIPPED ECOSYSTEMS',
+      label: 'SHIPPED PLATFORMS',
       value: 'iOS · Android · Web',
-      subValue: 'Live on App Store & Google Play',
-      delta: 'OTA & CI/CD Ready',
+      subValue: 'App Store, Google Play & SSR',
+      delta: 'CI/CD Automated',
       sparkline: [20, 38, 45, 62, 70, 85, 94, 99],
       color: '#00E5FF'
     },
     {
-      id: 'escrow',
-      label: 'PAYMENT & ESCROW INTEGRITY',
-      value: '99.98%',
-      subValue: 'Row-Locked MySQL + QR Handoff',
-      delta: 'Zero Overselling',
+      id: 'systems',
+      label: 'BACKEND & DATA',
+      value: 'Node · MySQL · Redis',
+      subValue: 'REST APIs, WebSockets & Queues',
+      delta: 'High Availability',
       sparkline: [60, 68, 75, 82, 88, 94, 98, 100],
       color: '#8B5CF6'
     },
     {
       id: 'overlap',
-      label: 'TEAM COLLABORATION WINDOW',
+      label: 'TEAM COLLABORATION',
       value: '9:00 AM EST+',
-      subValue: 'Full North American & EU Overlap',
+      subValue: 'North American & EU Overlap',
       delta: 'Daily Standup Ready',
       sparkline: [50, 65, 70, 80, 85, 90, 95, 100],
       color: '#ADFF2F'
@@ -107,10 +107,10 @@ export const usePortfolioData = () => {
     {
       id: 'xernee',
       slug: 'xernee-platform',
-      title: 'Xernee — Commerce, Courier Dispatch & QR Escrow',
-      subtitle: 'Technical Founder & Lead Engineer · Mobile App (iOS & Android) + Nuxt 3 Storefront + Node.js/Express Core',
+      title: 'Xernee',
+      subtitle: 'Social Commerce, Storefront & QR Escrow Platform',
       role: 'Technical Founder & Lead Engineer',
-      period: '2024 – Present',
+      period: '2024 to Present',
       category: 'Commerce & Delivery',
       liveUrl: 'https://xernee.com',
       secondaryUrl: 'https://xernee.com/download',
@@ -121,41 +121,36 @@ export const usePortfolioData = () => {
       accentHex: '#00FFA3',
       statusBadge: 'LIVE · APP STORE & PLAY STORE',
       metrics: [
-        { label: 'Architecture', value: 'Mobile + Web + API', delta: '3 Codebases' },
-        { label: 'Escrow Release', value: 'QR Scan Gated', delta: 'Socket.io Live' },
-        { label: 'Dispatch Queue', value: 'BullMQ + Redis', delta: 'Real-Time GPS' }
+        { label: 'Platforms', value: 'iOS, Android & Nuxt 3', delta: '3 Codebases' },
+        { label: 'Settlement', value: 'QR Escrow Release', delta: 'Socket.io Sync' },
+        { label: 'Dispatch', value: 'BullMQ + Redis', delta: 'Live GPS' }
       ],
       summary:
-        'End-to-end social commerce, merchant storefront, and on-demand local courier dispatch ecosystem. Features AI computer-vision product detection, ephemeral Seller Stories, distance-based courier dispatch with live WebSocket GPS telemetry, and cryptographic QR code proof-of-pickup/delivery escrow handoffs.',
+        'Cross-platform mobile app (iOS and Android), Nuxt 3 web storefront, and Node.js backend combining verified merchant catalogs, AI product detection, QR escrow handoffs, and optional local courier dispatch.',
       architectureHighlights: [
-        'Full Stack & Mobile Architecture: Cross-platform React Native (Expo) mobile app live on Apple App Store & Google Play Store, Node.js/Express backend, and Nuxt 3 merchant portal.',
-        'Local Courier Dispatch & Live GPS Tracking: Distance-based pricing, courier collateral management, live WebSocket GPS tracking, and BullMQ/Redis background job queues matching orders to nearby couriers.',
-        'QR Proof of Delivery & Escrow Handoff: Holds payment in escrow at checkout and releases funds to merchants and couriers only when pickup/delivery QR code is scanned, syncing live via Socket.io.',
-        'Database Schema & Payment Integrity: Relational MySQL transactions with row locking (SELECT ... FOR UPDATE) to prevent stock overselling, server-side price validation, idempotency keys, and webhook signature verification.',
-        'Google Cloud & Security Infrastructure: Media streaming on Google Cloud Storage (GCS), expiring signed URLs for private KYC documents, and 2FA authenticator protection for merchant sessions.'
+        'Shipped the React Native (Expo) mobile app on Apple App Store and Google Play Store alongside the Nuxt 3 merchant portal and Node.js/Express API.',
+        'Built QR order collection and Paystack escrow release synced live to merchant dashboards via Socket.io.',
+        'Implemented MySQL row locking to prevent stock overselling and Google Cloud Storage signed URLs for verification documents.'
       ],
       techStack: [
         'React Native',
         'Expo',
         'Node.js',
-        'Express.js',
+        'Express',
         'Nuxt 3',
         'MySQL',
         'Redis',
-        'BullMQ',
         'Socket.io',
-        'Google Cloud Storage',
-        'Paystack Escrow',
-        '2FA / JWT'
+        'GCP'
       ]
     },
     {
       id: 'bbl',
       slug: 'bold-better-living',
-      title: 'Bold Better Living (BBL) — AI Wellness Companion',
-      subtitle: 'Mobile Developer (Contract) · React Native, Expo & AI Health Rhythm Engine',
+      title: 'Bold Better Living',
+      subtitle: 'AI Guided Wellness & Habit Tracking Mobile App',
       role: 'Mobile Developer (Contract)',
-      period: '2025 (Contract)',
+      period: '2025',
       category: 'Mobile & AI',
       liveUrl: 'https://boldbetterliving.com',
       screenshot: '/screenshots/bbl-desktop.png',
@@ -163,34 +158,34 @@ export const usePortfolioData = () => {
       accentHex: '#00E5FF',
       statusBadge: 'PRODUCTION · iOS & ANDROID',
       metrics: [
-        { label: 'Platform', value: 'iOS & Android', delta: 'React Native + Expo' },
-        { label: 'Intelligence', value: 'In-App AI Guide', delta: 'Daily Check-Ins' },
-        { label: 'Offline Sync', value: 'Local Persistence', delta: 'Resilient HTTP' }
+        { label: 'Mobile Stack', value: 'React Native & Expo', delta: 'iOS & Android' },
+        { label: 'Guidance', value: 'In App AI Assistant', delta: 'Daily Check Ins' },
+        { label: 'State Sync', value: 'Local Persistence', delta: 'Resilient HTTP' }
       ],
       summary:
-        'AI-guided wellness mobile application and digital platform tailored for personalized nutrition, fitness, weight loss tracking, and daily rhythm check-ins powered by an adaptive in-app AI assistant.',
+        'Mobile wellness application built with React Native and Expo for personalized nutrition, fitness, weight loss tracking, and daily check-ins guided by an in-app AI assistant.',
       architectureHighlights: [
-        'Built the BBL wellness mobile application using React Native and Expo, implementing nutrition, fitness, weight loss tracking, and daily check-in features guided by an in-app AI assistant.',
-        'Engineered resilient HTTP client services with automatic retry/token refresh, local state persistence, and 60fps native navigation transitions across iOS and Android devices.',
-        'Structured modular biometric & habit telemetry tracking screens with real-time progress visualization.'
+        'Developed nutrition, fitness, weight loss tracking, and daily check-in flows guided by an interactive AI assistant.',
+        'Created reliable HTTP client services with token refresh, offline state persistence, and smooth 60fps navigation across iOS and Android.',
+        'Built modular progress charts and habit tracking screens for daily user retention.'
       ],
       techStack: [
         'React Native',
         'Expo',
         'TypeScript',
         'REST APIs',
-        'AI Assistant Integration',
-        'Local State Persistence',
+        'AI Assistant',
+        'State Persistence',
         'iOS & Android'
       ]
     },
     {
       id: 'exquisite-escape',
       slug: 'exquisite-escape',
-      title: 'Exquisite Escape — Amadeus SSR Flight & Travel Engine',
-      subtitle: 'Frontend & API Integration Developer · Nuxt.js SSR + Amadeus GDS Real-Time Pricing',
+      title: 'Exquisite Escape',
+      subtitle: 'Amadeus GDS Flight, Hotel & Tour Booking Engine',
       role: 'Frontend & API Integration Developer',
-      period: '2024 – 2025 (Contract)',
+      period: '2024 to 2025',
       category: 'Travel & FinTech',
       liveUrl: 'https://exquisite-escape-nuxt.vercel.app',
       screenshot: '/screenshots/exquisite-escape-desktop.png',
@@ -199,22 +194,22 @@ export const usePortfolioData = () => {
       accentHex: '#8B5CF6',
       statusBadge: 'LIVE · NUXT SSR + AMADEUS API',
       metrics: [
-        { label: 'GDS Engine', value: 'Amadeus API', delta: 'Live Flight Fares' },
-        { label: 'Rendering', value: 'Nuxt.js SSR', delta: 'Sub-Second Hydration' },
-        { label: 'Workflows', value: 'Flights · Hotels · Tours', delta: 'End-to-End Booking' }
+        { label: 'GDS Engine', value: 'Amadeus REST API', delta: 'Live Fares' },
+        { label: 'Rendering', value: 'Nuxt.js SSR', delta: 'Fast SEO Load' },
+        { label: 'Booking Flows', value: 'Flights, Hotels & Tours', delta: 'End to End' }
       ],
       summary:
-        'Full-featured travel booking platform powered by Nuxt.js Server-Side Rendering (SSR) and the Amadeus Global Distribution System (GDS) REST API for live flight search, multi-leg route queries, real-time fare pricing, hotels, and custom tour packages.',
+        'Travel booking platform powered by Nuxt.js Server Side Rendering (SSR) and the Amadeus GDS API for live flight search, multi-city route queries, real-time pricing, hotels, and custom tour packages.',
       architectureHighlights: [
-        'Integrated the Amadeus REST API to power live flight search, airport/route autocomplete queries, cabin class filtering, real-time dynamic pricing, and end-to-end travel booking workflows.',
-        'Engineered the responsive web frontend using Nuxt.js with Server-Side Rendering (SSR) for fast first-contentful paint, SEO indexing, and continuous deployment on Vercel.',
-        'Built interactive boarding-pass search widgets and custom package builders with dynamic itinerary calculation.'
+        'Integrated the Amadeus API to handle live flight search, airport autocomplete, cabin filtering, dynamic fare pricing, and booking workflows.',
+        'Built the SSR frontend in Nuxt.js for fast initial page loads, SEO indexing, and automated deployments on Vercel.',
+        'Designed interactive itinerary builders and multi-traveler booking forms.'
       ],
       techStack: [
         'Nuxt.js (SSR)',
         'Vue 3',
         'Node.js',
-        'Amadeus REST API',
+        'Amadeus API',
         'Tailwind CSS',
         'Vercel CI/CD'
       ]
@@ -222,10 +217,10 @@ export const usePortfolioData = () => {
     {
       id: 'jons-world',
       slug: 'jons-world',
-      title: 'Jons World — Enterprise Brand & Production Portal',
-      subtitle: 'Senior Systems & Web Engineer · Full-Stack Nuxt.js, Node.js/Express & Relational MySQL',
+      title: 'Jons World',
+      subtitle: 'Enterprise Brand Production & Client Order Portal',
       role: 'Senior Systems & Web Engineer',
-      period: '2023 – Present',
+      period: '2023 to Present',
       category: 'Enterprise & SaaS',
       liveUrl: 'https://jons-liart.vercel.app',
       screenshot: '/screenshots/jonsworld-desktop.png',
@@ -234,20 +229,20 @@ export const usePortfolioData = () => {
       accentHex: '#10B981',
       statusBadge: 'LIVE · ENTERPRISE WEB SYSTEM',
       metrics: [
-        { label: 'Database', value: 'MySQL Relational', delta: 'Optimized Queries' },
-        { label: 'API Layer', value: 'Node.js + Express', delta: 'Strict Validation' },
-        { label: 'Client Reach', value: '30+ Enterprise Brands', delta: '4.8/5 Trustpilot' }
+        { label: 'Database', value: 'MySQL Relational', delta: 'Tuned Queries' },
+        { label: 'API Layer', value: 'Node.js & Express', delta: 'Strict Validation' },
+        { label: 'Adoption', value: '30+ Enterprise Clients', delta: '4.8/5 Rating' }
       ],
       summary:
-        'Client and server web platform for St. Jons World Communications Ltd., powering enterprise branding, commercial print workflows, custom packaging quotes, and client order pipelines.',
+        'Full-stack web platform for St. Jons World Communications Ltd., powering enterprise branding, commercial print workflows, custom packaging quotes, and client order pipelines.',
       architectureHighlights: [
-        'Developed and maintained client and server solutions for web applications, managing relational MySQL database schemas, REST endpoints, and responsive user interfaces across desktop and mobile devices.',
-        'Improved existing backend routes and SQL queries to reduce response latency, strengthen payload input validation, and make HTTP client calls more reliable.',
-        'Collaborated directly with stakeholders to scope product features, diagnose production issues, and ship zero-downtime updates.'
+        'Architected and maintained client and server applications across Nuxt.js, Node.js/Express REST APIs, and relational MySQL schemas.',
+        'Optimized SQL queries and backend routes to cut response latency, tighten request validation, and improve HTTP client reliability.',
+        'Partnered with business stakeholders to scope features, resolve production issues, and ship updates without downtime.'
       ],
       techStack: [
         'Node.js',
-        'Express.js',
+        'Express',
         'Nuxt.js',
         'MySQL',
         'REST APIs',
@@ -257,33 +252,33 @@ export const usePortfolioData = () => {
     {
       id: 'techcare-geoedu',
       slug: 'techcare-and-geoedu360',
-      title: 'Tech.Care & GeoEdu360 — Clinical Telemetry & ePIN API',
-      subtitle: 'Full Stack Developer · Healthcare Records Platform & High-Security Digital ePIN API',
+      title: 'Tech.Care & GeoEdu360',
+      subtitle: 'Clinical Patient Telemetry & Digital ePIN REST API',
       role: 'Full Stack Developer',
-      period: '2021 – 2024',
+      period: '2021 to 2024',
       category: 'Enterprise & SaaS',
       liveUrl: 'https://github.com/chrisjosh087',
       screenshot: '/screenshots/techcare-desktop.png',
       accentColor: 'from-[#00E5FF] to-[#8B5CF6]',
       accentHex: '#00E5FF',
-      statusBadge: 'FULL-STACK · HEALTH & EDTECH',
+      statusBadge: 'FULL STACK · HEALTH & EDTECH',
       metrics: [
-        { label: 'Clinical UI', value: 'Vital Sign Telemetry', delta: 'Systolic/Diastolic Charts' },
-        { label: 'GeoEdu360 API', value: 'Digital ePIN Engine', delta: 'Audit Transaction Logs' },
-        { label: 'Security', value: 'Session & RBAC', delta: 'MySQL Integrity' }
+        { label: 'Clinical UI', value: 'Vital Sign Telemetry', delta: 'BP & Heart Charts' },
+        { label: 'GeoEdu360 API', value: 'Digital ePIN Engine', delta: 'Audit Logs' },
+        { label: 'Access Control', value: 'Session & RBAC', delta: 'MySQL Integrity' }
       ],
       summary:
-        'Healthcare patient telemetry dashboard (Tech.Care) visualizing multi-month blood pressure trends, respiratory/heart-rate vitals, and patient diagnostic records, alongside GeoEdu360 API for secure digital ePIN purchases and transaction logging.',
+        'Patient diagnostic dashboard (Tech.Care) visualizing multi-month blood pressure trends, heart-rate vitals, and lab records, paired with the GeoEdu360 REST API for digital ePIN purchases and audit logging.',
       architectureHighlights: [
-        'Engineered Tech.Care patient diagnostic dashboard featuring interactive systolic/diastolic blood pressure charting, vital sign anomaly indicators, and instant patient record lookup.',
-        'Architected the GeoEdu360 REST API handling multi-role authentication, hardened session security, cryptographic digital ePIN generation/purchases, and immutable transaction logging.',
-        'Coached and mentored junior developers and IT interns in frontend and backend engineering across JavaScript, Vue.js, Node.js, Express, MySQL databases, Git, and Linux.'
+        'Built the Tech.Care clinical interface with interactive systolic/diastolic blood pressure charting and instant patient diagnostic lookup.',
+        'Engineered the GeoEdu360 REST API for multi-role authentication, session security, digital ePIN generation, and transaction logging.',
+        'Mentored junior developers and IT interns across JavaScript, Vue.js, Node.js, Express, MySQL, Git, and Linux.'
       ],
       techStack: [
         'JavaScript (ES6+)',
         'Vue 3',
         'Node.js',
-        'Express.js',
+        'Express',
         'MySQL',
         'PHP',
         'Linux & Git'
@@ -292,32 +287,32 @@ export const usePortfolioData = () => {
     {
       id: 'fashionhub-renax',
       slug: 'fashion-hub-and-renax',
-      title: 'Fashion Hub & Renax — Multi-Vendor & Fleet Showcase',
-      subtitle: 'Full Stack Engineer · Multi-Merchant Marketplace & Dark-Mode Automotive Booking UI',
+      title: 'Fashion Hub & Renax',
+      subtitle: 'Multi Vendor Marketplace & Fleet Booking Interface',
       role: 'Full Stack Developer',
-      period: '2021 – 2024',
+      period: '2021 to 2024',
       category: 'Commerce & Delivery',
       liveUrl: 'https://github.com/chrisjosh087',
       screenshot: '/screenshots/renax-desktop.png',
       accentColor: 'from-[#F59E0B] to-[#00FFA3]',
       accentHex: '#F59E0B',
-      statusBadge: 'MARKETPLACE & INTERACTIVE UI',
+      statusBadge: 'MARKETPLACE & BOOKING UI',
       metrics: [
-        { label: 'Architecture', value: 'Multi-Merchant', delta: 'Catalog & Checkout' },
-        { label: 'UI Performance', value: '60fps Transitions', delta: 'Responsive Grid' },
-        { label: 'Backend', value: 'REST API + MySQL', delta: 'Order Lifecycle' }
+        { label: 'Catalog', value: 'Multi Merchant', delta: 'Inventory & Cart' },
+        { label: 'Frontend', value: 'Responsive UI', delta: 'Fast Filtering' },
+        { label: 'Backend', value: 'REST API + MySQL', delta: 'Order Tracking' }
       ],
       summary:
-        'Merchant and customer commerce platforms including Fashion Hub (multi-vendor storefront, inventory management, and customer checkout) and high-contrast interactive automotive fleet configurators.',
+        'Multi-merchant e-commerce storefront (Fashion Hub) with vendor inventory management and customer checkout, alongside the Renax automotive fleet booking interface.',
       architectureHighlights: [
-        'Built merchant and customer marketplace workflows supporting multi-vendor product catalogs, cart state synchronization, and order lifecycle tracking.',
-        'Designed high-contrast dark-theme UI layouts with interactive category filtering, smooth viewport transitions, and mobile-first responsive grids.'
+        'Implemented multi-vendor catalog browsing, cart synchronization, merchant inventory controls, and customer checkout flows.',
+        'Crafted responsive dark-mode booking layouts with instant category filtering and mobile-first grids.'
       ],
       techStack: [
         'Vue 3',
         'Nuxt.js',
         'Node.js',
-        'Express.js',
+        'Express',
         'MySQL',
         'Tailwind CSS',
         'REST APIs'
@@ -326,49 +321,6 @@ export const usePortfolioData = () => {
   ]
 
   const experiences: ExperienceItem[] = [
-    {
-      id: 'exp-xernee',
-      role: 'Technical Founder & Lead Engineer',
-      company: 'Xernee',
-      period: '2024 to Present',
-      type: 'Full-Time · Founder & Lead Architect',
-      url: 'https://xernee.com/download',
-      urlLabel: 'xernee.com/download',
-      accent: '#00FFA3',
-      stack: [
-        'React Native',
-        'Node.js',
-        'Express',
-        'MySQL',
-        'Redis',
-        'BullMQ',
-        'Socket.io',
-        'Nuxt 3',
-        'Google Cloud Platform'
-      ],
-      bullets: [
-        {
-          title: 'Full Stack & Mobile Architecture',
-          text: 'Designed, built, and shipped the complete platform across a cross-platform React Native mobile app (live on Apple App Store and Google Play Store), a Node.js and Express backend, and a Nuxt 3 web storefront and merchant portal.'
-        },
-        {
-          title: 'Local Courier Dispatch & Live GPS Tracking',
-          text: 'Built the on-demand delivery system with distance-based pricing, courier collateral management, live WebSocket GPS tracking, and background job queues that match orders to nearby online couriers.'
-        },
-        {
-          title: 'QR Proof of Delivery & Escrow Handoff',
-          text: 'Implemented QR code order collection that holds payment in escrow at checkout and releases funds to merchants and couriers only when the pickup or delivery QR code is scanned, while syncing scan status live to the merchant web dashboard via Socket.io.'
-        },
-        {
-          title: 'Database Schema & Payment Integrity',
-          text: 'Managed relational MySQL schemas and migrations, using database transactions and row locking to prevent stock overselling, server-side price validation, idempotency keys, and webhook signature verification.'
-        },
-        {
-          title: 'Google Cloud & Security Infrastructure',
-          text: 'Configured media storage and streaming on Google Cloud Storage (GCS), built expiring signed URLs for private verification documents, and added authenticator 2FA protection for merchant web sessions.'
-        }
-      ]
-    },
     {
       id: 'exp-jonsworld',
       role: 'Senior Systems & Web Engineer',
@@ -381,13 +333,51 @@ export const usePortfolioData = () => {
       stack: ['Node.js', 'Express', 'Nuxt.js', 'MySQL', 'REST APIs', 'Tailwind CSS'],
       bullets: [
         {
-          text: 'Developed and maintained client and server solutions for web applications, managing MySQL database schemas, REST endpoints, and responsive user interfaces across desktop and mobile devices.'
+          title: 'Client & Server Architecture',
+          text: 'Develop and maintain production web applications, managing relational MySQL schemas, Express REST endpoints, and responsive Nuxt.js interfaces across desktop and mobile.'
         },
         {
-          text: 'Improved existing backend routes and SQL queries to reduce response times, strengthen input validation, and make HTTP client calls more reliable.'
+          title: 'Query & Route Optimization',
+          text: 'Refactored backend routes and SQL queries to lower API latency, enforce strict payload validation, and make HTTP client integrations more resilient.'
         },
         {
-          text: 'Worked closely with stakeholders to plan features, resolve production issues, and ship updates smoothly.'
+          title: 'Product Delivery',
+          text: 'Partner directly with stakeholders to scope requirements, diagnose live production issues, and ship zero-downtime releases.'
+        }
+      ]
+    },
+    {
+      id: 'exp-xernee',
+      role: 'Technical Founder & Lead Engineer',
+      company: 'Xernee',
+      period: '2024 to Present',
+      type: 'Founder & Lead Architect',
+      url: 'https://xernee.com/download',
+      urlLabel: 'xernee.com/download',
+      accent: '#00FFA3',
+      stack: [
+        'React Native',
+        'Expo',
+        'Node.js',
+        'Express',
+        'Nuxt 3',
+        'MySQL',
+        'Redis',
+        'Socket.io',
+        'GCP'
+      ],
+      bullets: [
+        {
+          title: 'Mobile, Web & API Ecosystem',
+          text: 'Architected and shipped the React Native mobile app on Apple App Store and Google Play Store, the Nuxt 3 web storefront, and the Node.js/Express core API.'
+        },
+        {
+          title: 'Escrow, QR Handover & Dispatch',
+          text: 'Engineered Paystack escrow checkout with QR code order verification, live Socket.io dashboard sync, and Redis/BullMQ courier dispatch with WebSocket GPS tracking.'
+        },
+        {
+          title: 'Data Integrity & Cloud Security',
+          text: 'Implemented MySQL row locking (SELECT ... FOR UPDATE) to prevent stock overselling, idempotency keys, Google Cloud Storage signed URLs, and 2FA merchant sessions.'
         }
       ]
     },
@@ -400,13 +390,15 @@ export const usePortfolioData = () => {
       url: 'https://boldbetterliving.com',
       urlLabel: 'boldbetterliving.com',
       accent: '#8B5CF6',
-      stack: ['React Native', 'Expo', 'REST APIs', 'AI Integration'],
+      stack: ['React Native', 'Expo', 'TypeScript', 'REST APIs', 'AI Integration'],
       bullets: [
         {
-          text: 'Built the BBL wellness mobile application using React Native and Expo, implementing nutrition, fitness, weight loss tracking, and daily check-in features guided by an in-app AI assistant.'
+          title: 'Cross Platform Mobile App',
+          text: 'Built the BBL wellness mobile app using React Native and Expo, delivering nutrition, fitness, weight loss tracking, and daily check-ins guided by an in-app AI assistant.'
         },
         {
-          text: 'Created reliable HTTP client services, local state persistence, and smooth mobile navigation for iOS and Android users.'
+          title: 'Offline Persistence & Navigation',
+          text: 'Engineered resilient HTTP client services, local state persistence, and smooth native navigation across iOS and Android devices.'
         }
       ]
     },
@@ -419,13 +411,15 @@ export const usePortfolioData = () => {
       url: 'https://exquisite-escape-nuxt.vercel.app',
       urlLabel: 'exquisite-escape-nuxt.vercel.app',
       accent: '#ADFF2F',
-      stack: ['Nuxt.js (SSR)', 'Node.js', 'Amadeus REST API', 'Vercel'],
+      stack: ['Nuxt.js (SSR)', 'Vue 3', 'Node.js', 'Amadeus REST API', 'Vercel'],
       bullets: [
         {
-          text: 'Integrated the Amadeus API to power live flight search, route queries, real-time pricing, and end-to-end travel booking workflows for flights, hotels, and tours.'
+          title: 'Amadeus GDS Integration',
+          text: 'Integrated the Amadeus REST API for live flight search, multi-leg route queries, real-time fare pricing, and end-to-end booking workflows across flights, hotels, and tours.'
         },
         {
-          text: 'Engineered the web frontend using Nuxt.js with Server Side Rendering (SSR) for fast load times and managed continuous deployment on Vercel.'
+          title: 'SSR Performance & CI/CD',
+          text: 'Built the responsive frontend with Nuxt.js Server Side Rendering (SSR) for fast load times and SEO indexing, managing automated deployments on Vercel.'
         }
       ]
     },
@@ -434,15 +428,17 @@ export const usePortfolioData = () => {
       role: 'Full Stack Developer & Technical Instructor',
       company: 'Geosolutions & Independent Projects',
       period: '2021 to 2024',
-      type: 'Full-Stack Engineering & Mentorship',
+      type: 'Full Stack Engineering & Mentorship',
       accent: '#F59E0B',
       stack: ['JavaScript', 'Node.js', 'Express', 'Vue.js', 'PHP', 'MySQL', 'Linux', 'Git'],
       bullets: [
         {
-          text: 'Built and maintained full stack web applications and REST APIs including GeoEdu360 API (authentication, session security, digital ePIN purchases, and transaction logging), Tech Care (healthcare records platform), and Fashion Hub (merchant and customer marketplace).'
+          title: 'Full Stack Web & API Systems',
+          text: 'Delivered production web apps and APIs including GeoEdu360 API (authentication, digital ePIN generation, and transaction logs), Tech.Care (clinical records UI), and Fashion Hub (multi-vendor marketplace).'
         },
         {
-          text: 'Coached and mentored junior developers and IT interns in frontend and backend engineering across JavaScript, Vue.js, Node.js, Express, MySQL databases, Git, and Linux.'
+          title: 'Engineering Mentorship',
+          text: 'Trained and mentored junior developers and IT interns across JavaScript, Vue.js, Node.js, Express, MySQL schema design, Git workflows, and Linux.'
         }
       ]
     }
@@ -452,10 +448,10 @@ export const usePortfolioData = () => {
     {
       id: 'client-mobile',
       category: 'Client & Mobile',
-      tag: 'FRONTEND & CROSS-PLATFORM',
+      tag: 'FRONTEND & CROSS PLATFORM',
       accent: '#00FFA3',
       allocation: 30,
-      description: 'Production iOS/Android mobile apps and SSR web applications with 60fps motion and resilient state.',
+      description: 'iOS and Android mobile apps and SSR web applications with responsive UI and offline-resilient state.',
       skills: [
         { name: 'React Native', level: 98, highlight: true },
         { name: 'Expo (EAS / OTA)', level: 98, highlight: true },
@@ -472,32 +468,32 @@ export const usePortfolioData = () => {
     {
       id: 'server-apis',
       category: 'Server & APIs',
-      tag: 'REAL-TIME & DISTRIBUTED BACKEND',
+      tag: 'BACKEND & REAL TIME',
       accent: '#00E5FF',
       allocation: 28,
-      description: 'Event-driven Node.js/Express backends, WebSocket telemetry, and distributed Redis/BullMQ workers.',
+      description: 'Node.js and Express REST APIs, third-party GDS/payment integrations, WebSockets, and job queues.',
       skills: [
         { name: 'Node.js', level: 98, highlight: true },
         { name: 'Express.js', level: 98, highlight: true },
         { name: 'REST APIs & HTTP Clients', level: 98, highlight: true },
         { name: 'Socket.io (WebSockets)', level: 96, highlight: true },
-        { name: 'BullMQ Job Queues', level: 94, highlight: true },
-        { name: 'Redis Pub/Sub', level: 94 },
-        { name: 'Webhook Processing', level: 96 }
+        { name: 'BullMQ & Redis Queues', level: 94, highlight: true },
+        { name: 'Amadeus GDS API', level: 94 },
+        { name: 'Webhook Verification', level: 96 }
       ]
     },
     {
       id: 'databases-cloud',
       category: 'Databases & Cloud',
-      tag: 'DATA INTEGRITY & CLOUD INFRA',
+      tag: 'DATA & INFRASTRUCTURE',
       accent: '#8B5CF6',
       allocation: 22,
-      description: 'Relational MySQL schema design, ACID row locking for zero-oversell commerce, and GCP storage pipelines.',
+      description: 'Relational MySQL schema design, query optimization, ACID transactions, and Google Cloud storage.',
       skills: [
         { name: 'MySQL', level: 98, highlight: true },
-        { name: 'Database Schema & Migrations', level: 96, highlight: true },
-        { name: 'Transactions & Row Locking', level: 97, highlight: true },
-        { name: 'Redis Caching & Streams', level: 95 },
+        { name: 'Schema Design & Migrations', level: 96, highlight: true },
+        { name: 'ACID Transactions & Locking', level: 97, highlight: true },
+        { name: 'Redis Caching', level: 95 },
         { name: 'Google Cloud Platform (GCP)', level: 94, highlight: true },
         { name: 'Google Cloud Storage (GCS)', level: 96, highlight: true }
       ]
@@ -505,33 +501,33 @@ export const usePortfolioData = () => {
     {
       id: 'security-devops',
       category: 'Security & DevOps',
-      tag: 'HARDENED AUTH & CI/CD PIPELINES',
+      tag: 'AUTH & DEPLOYMENT',
       accent: '#ADFF2F',
       allocation: 10,
-      description: 'Cryptographic signed URLs, idempotent payment mutations, 2FA sessions, and automated mobile/web CI/CD.',
+      description: 'Role-based access control, 2FA sessions, signed URLs, idempotent mutations, and CI/CD pipelines.',
       skills: [
-        { name: 'JWT Authentication', level: 98 },
+        { name: 'JWT & Session Security', level: 98 },
         { name: 'Two Factor Auth (2FA)', level: 95, highlight: true },
-        { name: 'Signed URLs (GCS)', level: 96 },
+        { name: 'GCS Signed URLs', level: 96 },
         { name: 'Idempotency Keys', level: 97, highlight: true },
         { name: 'Docker & Linux', level: 90 },
-        { name: 'CI/CD (Codemagic, EAS, Vercel)', level: 95, highlight: true },
+        { name: 'CI/CD (EAS, Codemagic, Vercel)', level: 95, highlight: true },
         { name: 'Git Workflows', level: 97 }
       ]
     },
     {
-      id: 'delivery-commerce',
-      category: 'Delivery & Commerce',
-      tag: 'DOMAIN SPECIALIZATION',
+      id: 'product-domains',
+      category: 'Product Domains',
+      tag: 'SHIPPED VERTICALS',
       accent: '#F59E0B',
       allocation: 10,
-      description: 'Battle-tested domain expertise in real-time courier dispatch, escrow payouts, and multi-vendor commerce.',
+      description: 'Hands-on delivery across travel GDS booking, AI mobile wellness, enterprise portals, healthcare UI, and commerce.',
       skills: [
-        { name: 'Local Courier Dispatch', level: 98, highlight: true },
-        { name: 'Live GPS Tracking', level: 97, highlight: true },
-        { name: 'QR Code Proof of Delivery', level: 99, highlight: true },
-        { name: 'Escrow Payment Workflows', level: 98, highlight: true },
-        { name: 'Merchant Storefront Integrations', level: 97 }
+        { name: 'Travel & GDS Booking', level: 96, highlight: true },
+        { name: 'AI Mobile Wellness Apps', level: 96, highlight: true },
+        { name: 'Enterprise Web Portals', level: 98, highlight: true },
+        { name: 'Escrow & Payment Flows', level: 98, highlight: true },
+        { name: 'Live GPS & QR Dispatch', level: 97 }
       ]
     }
   ]
@@ -549,7 +545,7 @@ export const usePortfolioData = () => {
     },
     {
       title: 'Languages & Availability',
-      institution: 'English (Fluent) · Available for full EST hours overlap starting 9:00 AM EST',
+      institution: 'English (Fluent) · Available for full EST overlap starting 9:00 AM EST',
       badge: '9:00 AM EST Onwards'
     }
   ]

@@ -180,7 +180,7 @@
             <div class="flex items-center justify-between border-b border-white/10 bg-zinc-950 px-5 py-3.5">
               <div>
                 <h3 class="font-display text-sm font-semibold text-white">
-                  Chris Joshua — Curriculum Vitae
+                  Chris Joshua · Curriculum Vitae
                 </h3>
                 <p class="font-mono text-[11px] text-zinc-500">
                   Senior Web &amp; Mobile Engineer (React Native · Node.js · Express · GCP)
@@ -240,7 +240,7 @@ const copied = ref(false)
 const form = reactive({
   name: '',
   email: '',
-  subject: 'Senior Web & Mobile Engineer Inquiry — Chris Joshua',
+  subject: 'Senior Web & Mobile Engineer Inquiry · Chris Joshua',
   message: ''
 })
 

@@ -119,10 +119,10 @@
                   </div>
 
                   <h2 class="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-white">
-                    {{ activeProject.title.split('—')[0] }}
+                    {{ activeProject.title }}
                   </h2>
                   <p class="mt-1 font-display text-sm font-medium text-zinc-400">
-                    {{ activeProject.title.split('—')[1] || activeProject.subtitle }}
+                    {{ activeProject.subtitle }}
                   </p>
 
                   <p class="mt-3.5 line-clamp-4 text-sm leading-relaxed text-zinc-400">
@@ -308,38 +308,64 @@
 
     <!-- =======================================================================
          MOBILE & TABLET VIEW (< 1024px):
-         NO scroll animation at all! Users can scroll freely to read full descriptions
-         and tap project pills or Prev/Next buttons when they want to switch.
+         Matches the exact desktop header & layout structure without scroll lock
+         or redundant bullet boxes.
          ======================================================================= -->
     <div class="py-16 lg:hidden">
       <div class="mx-auto max-w-3xl px-4 sm:px-6">
-        <div class="border-b border-white/[0.08] pb-4">
-          <span class="font-mono text-[11px] uppercase tracking-widest text-zinc-500">
-            Selected Work ({{ String(mobileIndex + 1).padStart(2, '0') }} of {{ String(projects.length).padStart(2, '0') }})
-          </span>
-          <h2 class="mt-1.5 font-display text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            Shipped Products &amp; Ecosystems
-          </h2>
+        <!-- Same Clean Section Bar as Desktop -->
+        <div class="mb-5 flex items-center justify-between border-b border-white/[0.08] pb-3.5">
+          <div class="flex items-center gap-2.5">
+            <span class="font-mono text-xs uppercase tracking-widest text-zinc-500">
+              Selected Work
+            </span>
+            <span class="text-zinc-700">/</span>
+            <span class="font-mono text-xs text-zinc-300">
+              Project ({{ String(mobileIndex + 1).padStart(2, '0') }} of {{ String(projects.length).padStart(2, '0') }})
+            </span>
+          </div>
 
-          <div class="mt-4 flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+          <div class="flex items-center gap-1">
             <button
-              v-for="(proj, idx) in projects"
-              :key="proj.id"
               type="button"
-              class="shrink-0 rounded-lg border px-3 py-1.5 font-mono text-xs transition"
-              :class="
-                mobileIndex === idx
-                  ? 'border-white bg-white font-semibold text-black'
-                  : 'border-white/10 bg-zinc-950 text-zinc-400'
-              "
-              @click="mobileIndex = idx"
+              :disabled="mobileIndex === 0"
+              class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-zinc-950 text-zinc-300 transition hover:border-white/25 hover:text-white disabled:opacity-30"
+              title="Previous Project"
+              @click="mobileIndex = Math.max(0, mobileIndex - 1)"
             >
-              0{{ idx + 1 }} · {{ proj.title.split('—')[0].trim() }}
+              <ChevronUp class="h-3.5 w-3.5 -rotate-90" />
+            </button>
+            <button
+              type="button"
+              :disabled="mobileIndex === projects.length - 1"
+              class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-zinc-950 text-zinc-300 transition hover:border-white/25 hover:text-white disabled:opacity-30"
+              title="Next Project"
+              @click="mobileIndex = Math.min(projects.length - 1, mobileIndex + 1)"
+            >
+              <ChevronDown class="h-3.5 w-3.5 -rotate-90" />
             </button>
           </div>
         </div>
 
-        <div class="mt-6 overflow-hidden rounded-2xl border border-white/12 bg-[#050507]">
+        <!-- Clean Project Selector Tabs (No hyphens) -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+          <button
+            v-for="(proj, idx) in projects"
+            :key="proj.id"
+            type="button"
+            class="shrink-0 rounded-lg border px-3 py-1.5 font-mono text-xs transition"
+            :class="
+              mobileIndex === idx
+                ? 'border-white bg-white font-semibold text-black'
+                : 'border-white/10 bg-zinc-950 text-zinc-400'
+            "
+            @click="mobileIndex = idx"
+          >
+            0{{ idx + 1 }} · {{ proj.title }}
+          </button>
+        </div>
+
+        <div class="mt-5 overflow-hidden rounded-2xl border border-white/12 bg-[#050507]">
           <div class="flex items-center justify-between border-b border-white/[0.08] bg-[#0B0B0E] px-3.5 py-2.5">
             <div class="flex items-center gap-1.5">
               <span class="flex h-3 w-3 items-center justify-center rounded-full border border-[#E0443E] bg-[#FF5F56] text-[8px] font-bold leading-none text-[#4D0000]">
@@ -388,38 +414,36 @@
           </div>
         </div>
 
+        <!-- Same Editorial Details Layout as Desktop (Zero Redundant Explanations) -->
         <div class="mt-6">
-          <div class="flex items-center justify-between font-mono text-xs text-zinc-400">
-            <span>0{{ mobileIndex + 1 }} / 0{{ projects.length }} · {{ mobileProject.category }}</span>
-            <span>{{ mobileProject.period }}</span>
+          <div class="flex items-baseline justify-between">
+            <div class="flex items-baseline gap-2">
+              <span class="font-display text-4xl font-light tracking-tighter text-white tabular-nums">
+                {{ String(mobileIndex + 1).padStart(2, '0') }}
+              </span>
+              <span class="font-mono text-xs text-zinc-600 tabular-nums">
+                / {{ String(projects.length).padStart(2, '0') }}
+              </span>
+            </div>
+            <span class="font-mono text-xs uppercase tracking-wider text-zinc-400">
+              {{ mobileProject.period }}
+            </span>
           </div>
 
-          <h3 class="mt-2 font-display text-2xl font-semibold text-white">
+          <div class="mt-3 font-mono text-[11px] uppercase tracking-widest text-zinc-500">
+            {{ mobileProject.role }} · {{ mobileProject.category }}
+          </div>
+
+          <h3 class="mt-1.5 font-display text-2xl font-semibold text-white">
             {{ mobileProject.title }}
           </h3>
-          <p class="mt-1 text-xs font-medium text-zinc-400">
+          <p class="mt-1 font-display text-sm font-medium text-zinc-400">
             {{ mobileProject.subtitle }}
           </p>
 
-          <p class="mt-4 text-sm leading-relaxed text-zinc-300">
+          <p class="mt-3.5 text-sm leading-relaxed text-zinc-400">
             {{ mobileProject.summary }}
           </p>
-
-          <div class="mt-5 rounded-xl border border-white/[0.08] bg-[#070709] p-4">
-            <div class="font-mono text-[10px] uppercase tracking-wider text-zinc-400">
-              Key Engineering Highlights
-            </div>
-            <ul class="mt-3 space-y-2.5">
-              <li
-                v-for="(hl, hIdx) in mobileProject.architectureHighlights"
-                :key="hIdx"
-                class="flex items-start gap-2.5 text-xs leading-relaxed text-zinc-300"
-              >
-                <span class="mt-0.5 font-mono text-[10px] text-zinc-500">0{{ hIdx + 1 }}</span>
-                <span>{{ hl }}</span>
-              </li>
-            </ul>
-          </div>
 
           <div class="mt-5 divide-y divide-white/[0.07] border-y border-white/[0.07]">
             <div
@@ -435,13 +459,9 @@
             </div>
           </div>
 
-          <div class="mt-4 flex flex-wrap gap-1.5">
-            <span
-              v-for="tech in mobileProject.techStack"
-              :key="tech"
-              class="rounded-md border border-white/[0.08] bg-zinc-950 px-2.5 py-1 font-mono text-[11px] text-zinc-300"
-            >
-              {{ tech }}
+          <div class="mt-3.5 flex flex-wrap gap-x-2.5 gap-y-1 font-mono text-[11px] text-zinc-500">
+            <span v-for="(tech, tIdx) in mobileProject.techStack" :key="tech">
+              {{ tech }}<span v-if="tIdx < mobileProject.techStack.length - 1" class="ml-2.5 text-zinc-800">·</span>
             </span>
           </div>
 
