@@ -240,24 +240,55 @@
                     <span class="truncate">{{ activeProject.liveUrl.replace('https://', '') }}</span>
                   </a>
 
-                  <!-- Right Fullscreen Icon -->
-                  <button
-                    type="button"
-                    class="inline-flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
-                    title="View Fullscreen Screenshot"
-                    @click="openLightbox(activeIndex)"
-                  >
-                    <Maximize2 class="h-3.5 w-3.5" />
-                  </button>
+                  <!-- Right Controls: Optional Inline Screen Toggle (Home / Download) + Fullscreen Icon -->
+                  <div class="flex items-center gap-1.5">
+                    <div
+                      v-if="activeProject.secondaryScreenshot"
+                      class="inline-flex items-center rounded-md border border-white/10 bg-black p-0.5 font-mono text-[10px]"
+                    >
+                      <button
+                        type="button"
+                        class="rounded px-2 py-0.5 transition"
+                        :class="!inlineSecondaryShot ? 'bg-white font-semibold text-black' : 'text-zinc-400 hover:text-white'"
+                        @click="inlineSecondaryShot = false"
+                      >
+                        Home
+                      </button>
+                      <button
+                        type="button"
+                        class="rounded px-2 py-0.5 transition"
+                        :class="inlineSecondaryShot ? 'bg-white font-semibold text-black' : 'text-zinc-400 hover:text-white'"
+                        @click="inlineSecondaryShot = true"
+                      >
+                        {{ activeProject.id === 'xernee' ? 'Download' : 'View 2' }}
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      class="inline-flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
+                      title="View Fullscreen Screenshot"
+                      @click="openLightbox(activeIndex)"
+                    >
+                      <Maximize2 class="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
 
                 <!-- 16:10 Desktop Viewport -->
                 <div class="relative aspect-[16/10] w-full overflow-hidden bg-black">
                   <ThreeShaderViewport
-                    v-show="!showArchitecture"
+                    v-show="!showArchitecture && !(inlineSecondaryShot && activeProject.secondaryScreenshot)"
                     :images="projectScreenshots"
                     :active-index="activeIndex"
                     :alt="activeProject.title"
+                  />
+
+                  <img
+                    v-if="!showArchitecture && inlineSecondaryShot && activeProject.secondaryScreenshot"
+                    :src="activeProject.secondaryScreenshot"
+                    :alt="`${activeProject.title} secondary view`"
+                    class="h-full w-full object-cover object-top"
                   />
 
                   <Transition name="page">
@@ -393,13 +424,37 @@
               <span class="truncate">{{ mobileProject.liveUrl.replace('https://', '') }}</span>
             </a>
 
-            <button
-              type="button"
-              class="inline-flex h-6 w-6 items-center justify-center rounded text-zinc-400"
-              @click="openLightbox(mobileIndex)"
-            >
-              <Maximize2 class="h-3.5 w-3.5" />
-            </button>
+            <div class="flex items-center gap-1.5">
+              <div
+                v-if="mobileProject.secondaryScreenshot"
+                class="inline-flex items-center rounded-md border border-white/10 bg-black p-0.5 font-mono text-[9px]"
+              >
+                <button
+                  type="button"
+                  class="rounded px-1.5 py-0.5 transition"
+                  :class="!inlineSecondaryShot ? 'bg-white font-semibold text-black' : 'text-zinc-400'"
+                  @click="inlineSecondaryShot = false"
+                >
+                  Home
+                </button>
+                <button
+                  type="button"
+                  class="rounded px-1.5 py-0.5 transition"
+                  :class="inlineSecondaryShot ? 'bg-white font-semibold text-black' : 'text-zinc-400'"
+                  @click="inlineSecondaryShot = true"
+                >
+                  {{ mobileProject.id === 'xernee' ? 'Download' : 'View 2' }}
+                </button>
+              </div>
+
+              <button
+                type="button"
+                class="inline-flex h-6 w-6 items-center justify-center rounded text-zinc-400"
+                @click="openLightbox(mobileIndex)"
+              >
+                <Maximize2 class="h-3.5 w-3.5" />
+              </button>
+            </div>
           </div>
 
           <div
@@ -407,7 +462,11 @@
             @click="openLightbox(mobileIndex)"
           >
             <img
-              :src="mobileProject.screenshot"
+              :src="
+                inlineSecondaryShot && mobileProject.secondaryScreenshot
+                  ? mobileProject.secondaryScreenshot
+                  : mobileProject.screenshot
+              "
               :alt="mobileProject.title"
               class="h-full w-full object-cover object-top"
             />
@@ -629,7 +688,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { Lock, Maximize2, ArrowUpRight, X, ChevronUp, ChevronDown } from 'lucide-vue-next'
 import { usePortfolioData } from '~/composables/usePortfolioData'
 
@@ -643,6 +702,7 @@ const showArchitecture = ref(false)
 const lightboxOpen = ref(false)
 const lightboxIndex = ref(0)
 const showSecondaryShot = ref(false)
+const inlineSecondaryShot = ref(false)
 
 const projectScreenshots = computed(() => projects.map((p) => p.screenshot))
 
@@ -656,9 +716,13 @@ const activeProject = computed(() => projects[activeIndex.value] || projects[0])
 const mobileProject = computed(() => projects[mobileIndex.value] || projects[0])
 const lightboxProject = computed(() => projects[lightboxIndex.value] || projects[0])
 
+watch([activeIndex, mobileIndex], () => {
+  inlineSecondaryShot.value = false
+})
+
 function openLightbox(idx: number) {
   lightboxIndex.value = Math.min(projects.length - 1, Math.max(0, idx))
-  showSecondaryShot.value = false
+  showSecondaryShot.value = inlineSecondaryShot.value
   lightboxOpen.value = true
 }
 
