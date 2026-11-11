@@ -221,7 +221,7 @@
                       type="button"
                       class="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#1AAB29] bg-[#27C93F] text-[#003B00] shadow-inner transition focus:outline-none"
                       title="Expand Fullscreen Preview"
-                      @click="lightboxOpen = true"
+                      @click="openLightbox(activeIndex)"
                     >
                       <svg class="h-2 w-2 opacity-80 transition-opacity group-hover/mac:opacity-100" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M2.2 6.2L2.2 7.8L3.8 7.8M7.8 3.8L7.8 2.2L6.2 2.2M2.5 7.5L7.5 2.5" />
@@ -245,7 +245,7 @@
                     type="button"
                     class="inline-flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
                     title="View Fullscreen Screenshot"
-                    @click="lightboxOpen = true"
+                    @click="openLightbox(activeIndex)"
                   >
                     <Maximize2 class="h-3.5 w-3.5" />
                   </button>
@@ -351,7 +351,7 @@
               <button
                 type="button"
                 class="flex h-3 w-3 items-center justify-center rounded-full border border-[#1AAB29] bg-[#27C93F] text-[8px] font-bold leading-none text-[#003B00]"
-                @click="lightboxOpen = true"
+                @click="openLightbox(mobileIndex)"
               >
                 +
               </button>
@@ -370,13 +370,16 @@
             <button
               type="button"
               class="inline-flex h-6 w-6 items-center justify-center rounded text-zinc-400"
-              @click="lightboxOpen = true"
+              @click="openLightbox(mobileIndex)"
             >
               <Maximize2 class="h-3.5 w-3.5" />
             </button>
           </div>
 
-          <div class="relative aspect-[16/10] w-full overflow-hidden bg-black">
+          <div
+            class="relative aspect-[16/10] w-full cursor-pointer overflow-hidden bg-black"
+            @click="openLightbox(mobileIndex)"
+          >
             <img
               :src="mobileProject.screenshot"
               :alt="mobileProject.title"
@@ -489,48 +492,119 @@
       </div>
     </div>
 
-    <!-- Fullscreen Screenshot Lightbox -->
-    <Transition name="page">
-      <div
-        v-if="lightboxOpen"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-xl sm:p-8"
-        @click.self="lightboxOpen = false"
-      >
-        <div class="relative max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-2xl border border-white/15 bg-black">
-          <div class="flex items-center justify-between border-b border-white/10 px-5 py-3.5">
-            <div class="flex items-center gap-3">
-              <div class="flex items-center gap-1.5">
+    <!-- Fullscreen Screenshot Lightbox (Teleported to body so it always renders ABOVE the fixed navbar) -->
+    <Teleport to="body">
+      <Transition name="page">
+        <div
+          v-if="lightboxOpen"
+          class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/92 p-3 backdrop-blur-xl sm:p-6 md:p-10"
+          role="dialog"
+          aria-modal="true"
+          @click.self="closeLightbox"
+        >
+          <div class="relative flex max-h-[92dvh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#09090D] shadow-[0_32px_96px_rgba(0,0,0,0.9)]">
+            <!-- Responsive Window Titlebar -->
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-[#0D0D12] px-4 py-3 sm:px-5 sm:py-3.5">
+              <div class="flex min-w-0 items-center gap-3">
+                <div class="flex shrink-0 items-center gap-1.5">
+                  <button
+                    type="button"
+                    class="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#E0443E] bg-[#FF5F56] text-[9px] font-bold text-[#4D0000] transition hover:brightness-110"
+                    title="Close Preview"
+                    @click="closeLightbox"
+                  >
+                    ×
+                  </button>
+                  <span class="h-3.5 w-3.5 rounded-full border border-[#DEA123] bg-[#FFBD2E]" />
+                  <span class="h-3.5 w-3.5 rounded-full border border-[#1AAB29] bg-[#27C93F]" />
+                </div>
+
+                <div class="min-w-0">
+                  <h4 class="truncate font-display text-xs font-semibold text-white sm:text-sm">
+                    {{ lightboxProject.title }}
+                  </h4>
+                  <a
+                    :href="lightboxProject.liveUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1 truncate font-mono text-[11px] text-zinc-400 hover:text-white"
+                  >
+                    <span>{{ lightboxProject.liveUrl.replace('https://', '') }}</span>
+                    <ArrowUpRight class="h-3 w-3 shrink-0" />
+                  </a>
+                </div>
+              </div>
+
+              <!-- Right Controls: View Switcher (if secondary screenshot exists) + Prev/Next + Close -->
+              <div class="flex items-center gap-2">
+                <div
+                  v-if="lightboxProject.secondaryScreenshot"
+                  class="inline-flex items-center rounded-lg border border-white/10 bg-black p-0.5 font-mono text-[11px]"
+                >
+                  <button
+                    type="button"
+                    class="rounded-md px-2.5 py-1 transition"
+                    :class="!showSecondaryShot ? 'bg-white font-semibold text-black' : 'text-zinc-400 hover:text-white'"
+                    @click="showSecondaryShot = false"
+                  >
+                    Home
+                  </button>
+                  <button
+                    type="button"
+                    class="rounded-md px-2.5 py-1 transition"
+                    :class="showSecondaryShot ? 'bg-white font-semibold text-black' : 'text-zinc-400 hover:text-white'"
+                    @click="showSecondaryShot = true"
+                  >
+                    {{ lightboxProject.id === 'xernee' ? 'Download' : 'View 2' }}
+                  </button>
+                </div>
+
+                <div class="hidden items-center gap-1 sm:flex">
+                  <button
+                    type="button"
+                    class="inline-flex h-8 items-center rounded-lg border border-white/10 bg-zinc-900 px-2.5 font-mono text-xs text-zinc-300 transition hover:bg-zinc-800 hover:text-white disabled:opacity-35"
+                    :disabled="lightboxIndex <= 0"
+                    @click="stepLightbox(-1)"
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex h-8 items-center rounded-lg border border-white/10 bg-zinc-900 px-2.5 font-mono text-xs text-zinc-300 transition hover:bg-zinc-800 hover:text-white disabled:opacity-35"
+                    :disabled="lightboxIndex >= projects.length - 1"
+                    @click="stepLightbox(1)"
+                  >
+                    →
+                  </button>
+                </div>
+
                 <button
                   type="button"
-                  class="h-3 w-3 rounded-full bg-[#FF5F56]"
-                  @click="lightboxOpen = false"
-                />
-                <span class="h-3 w-3 rounded-full bg-[#FFBD2E]" />
-                <span class="h-3 w-3 rounded-full bg-[#27C93F]" />
-              </div>
-              <div>
-                <h4 class="font-display text-sm font-semibold text-white">{{ activeProject.title }}</h4>
-                <p class="font-mono text-xs text-zinc-500">{{ activeProject.liveUrl }}</p>
+                  class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-zinc-900 text-white transition hover:bg-zinc-800"
+                  aria-label="Close Fullscreen Preview"
+                  @click="closeLightbox"
+                >
+                  <X class="h-4 w-4" />
+                </button>
               </div>
             </div>
-            <button
-              type="button"
-              class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-zinc-900 text-white hover:bg-zinc-800"
-              @click="lightboxOpen = false"
-            >
-              <X class="h-4 w-4" />
-            </button>
-          </div>
-          <div class="max-h-[80vh] overflow-auto p-2">
-            <img
-              :src="activeProject.screenshot"
-              :alt="activeProject.title"
-              class="w-full rounded-xl object-contain"
-            />
+
+            <!-- Centered & Responsive Image Stage -->
+            <div class="relative flex flex-1 items-center justify-center overflow-auto bg-black p-2 sm:p-5">
+              <img
+                :src="
+                  showSecondaryShot && lightboxProject.secondaryScreenshot
+                    ? lightboxProject.secondaryScreenshot
+                    : lightboxProject.screenshot
+                "
+                :alt="lightboxProject.title"
+                class="mx-auto block max-h-[calc(92dvh-5.25rem)] w-auto max-w-full rounded-xl border border-white/[0.08] object-contain shadow-2xl"
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </Teleport>
   </section>
 </template>
 
@@ -547,6 +621,8 @@ const scrollProgress = ref(0) // Continuous 0.0 to 1.0 driven by scrollbar or wh
 const mobileIndex = ref(0)
 const showArchitecture = ref(false)
 const lightboxOpen = ref(false)
+const lightboxIndex = ref(0)
+const showSecondaryShot = ref(false)
 
 const projectScreenshots = computed(() => projects.map((p) => p.screenshot))
 
@@ -558,6 +634,31 @@ const activeIndex = computed(() => {
 
 const activeProject = computed(() => projects[activeIndex.value] || projects[0])
 const mobileProject = computed(() => projects[mobileIndex.value] || projects[0])
+const lightboxProject = computed(() => projects[lightboxIndex.value] || projects[0])
+
+function openLightbox(idx: number) {
+  lightboxIndex.value = Math.min(projects.length - 1, Math.max(0, idx))
+  showSecondaryShot.value = false
+  lightboxOpen.value = true
+}
+
+function closeLightbox() {
+  lightboxOpen.value = false
+  showSecondaryShot.value = false
+}
+
+function stepLightbox(delta: number) {
+  const next = Math.min(projects.length - 1, Math.max(0, lightboxIndex.value + delta))
+  lightboxIndex.value = next
+  showSecondaryShot.value = false
+}
+
+function handleKeydown(e: KeyboardEvent) {
+  if (!lightboxOpen.value) return
+  if (e.key === 'Escape') closeLightbox()
+  else if (e.key === 'ArrowLeft') stepLightbox(-1)
+  else if (e.key === 'ArrowRight') stepLightbox(1)
+}
 
 function syncScrollPosition() {
   if (!desktopTrackRef.value || window.innerWidth < 1024) return
@@ -605,10 +706,12 @@ onMounted(() => {
   syncScrollPosition()
   window.addEventListener('scroll', syncScrollPosition, { passive: true })
   window.addEventListener('resize', syncScrollPosition, { passive: true })
+  window.addEventListener('keydown', handleKeydown)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', syncScrollPosition)
   window.removeEventListener('resize', syncScrollPosition)
+  window.removeEventListener('keydown', handleKeydown)
 })
 </script>

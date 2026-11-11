@@ -116,6 +116,7 @@ export const usePortfolioData = () => {
       secondaryUrl: 'https://xernee.com/download',
       secondaryLabel: 'App Store & Play Store',
       screenshot: '/screenshots/xernee-desktop.png',
+      secondaryScreenshot: '/screenshots/xernee-download-desktop.png',
       accentColor: 'from-[#00FFA3] to-[#00E5FF]',
       accentHex: '#00FFA3',
       statusBadge: 'LIVE · APP STORE & PLAY STORE',

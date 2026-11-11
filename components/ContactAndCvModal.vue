@@ -168,53 +168,55 @@
       </div>
     </section>
 
-    <!-- RESUME / CV MODAL -->
-    <Transition name="page">
-      <div
-        v-if="cvModalOpen"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-3 backdrop-blur-xl sm:p-6"
-        @click.self="$emit('close-cv')"
-      >
-        <div class="flex h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-black shadow-2xl">
-          <div class="flex items-center justify-between border-b border-white/10 bg-zinc-950 px-5 py-3.5">
-            <div>
-              <h3 class="font-display text-sm font-semibold text-white">
-                Chris Joshua — Curriculum Vitae
-              </h3>
-              <p class="font-mono text-[11px] text-zinc-500">
-                Senior Web &amp; Mobile Engineer (React Native · Node.js · Express · GCP)
-              </p>
+    <!-- RESUME / CV MODAL (Teleported to body so it always renders ABOVE the fixed navbar) -->
+    <Teleport to="body">
+      <Transition name="page">
+        <div
+          v-if="cvModalOpen"
+          class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/92 p-3 backdrop-blur-xl sm:p-6"
+          @click.self="$emit('close-cv')"
+        >
+          <div class="flex h-[90dvh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-black shadow-2xl">
+            <div class="flex items-center justify-between border-b border-white/10 bg-zinc-950 px-5 py-3.5">
+              <div>
+                <h3 class="font-display text-sm font-semibold text-white">
+                  Chris Joshua — Curriculum Vitae
+                </h3>
+                <p class="font-mono text-[11px] text-zinc-500">
+                  Senior Web &amp; Mobile Engineer (React Native · Node.js · Express · GCP)
+                </p>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <a
+                  :href="profile.cvUrl"
+                  download="Chris_Joshua_CV.pdf"
+                  class="inline-flex items-center gap-1.5 rounded-lg bg-white px-3.5 py-1.5 text-xs font-semibold text-black hover:bg-zinc-200"
+                >
+                  <Download class="h-3.5 w-3.5" />
+                  <span>Download PDF</span>
+                </a>
+                <button
+                  type="button"
+                  class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-zinc-900 text-white hover:bg-zinc-800"
+                  @click="$emit('close-cv')"
+                >
+                  <X class="h-4 w-4" />
+                </button>
+              </div>
             </div>
 
-            <div class="flex items-center gap-2">
-              <a
-                :href="profile.cvUrl"
-                download="Chris_Joshua_CV.pdf"
-                class="inline-flex items-center gap-1.5 rounded-lg bg-white px-3.5 py-1.5 text-xs font-semibold text-black hover:bg-zinc-200"
-              >
-                <Download class="h-3.5 w-3.5" />
-                <span>Download PDF</span>
-              </a>
-              <button
-                type="button"
-                class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-zinc-900 text-white hover:bg-zinc-800"
-                @click="$emit('close-cv')"
-              >
-                <X class="h-4 w-4" />
-              </button>
+            <div class="flex-1 bg-black">
+              <iframe
+                :src="profile.cvUrl"
+                title="Chris Joshua CV PDF"
+                class="h-full w-full border-0"
+              />
             </div>
-          </div>
-
-          <div class="flex-1 bg-black">
-            <iframe
-              :src="profile.cvUrl"
-              title="Chris Joshua CV PDF"
-              class="h-full w-full border-0"
-            />
           </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
