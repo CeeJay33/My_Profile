@@ -51,7 +51,6 @@ export const usePortfolioData = () => {
     tagline: 'React Native · Node.js · Express · Nuxt 3 · GCP',
     email: 'chrisjosh087@gmail.com',
     secondaryEmail: 'info@xernee.com',
-    phone: '+234 802 261 9320',
     linkedin: 'https://www.linkedin.com/in/chris-josh-5a1850284',
     linkedinHandle: 'linkedin.com/in/chris-josh-5a1850284',
     github: 'https://github.com/chrisjosh087',

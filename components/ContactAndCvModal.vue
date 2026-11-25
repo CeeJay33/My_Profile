@@ -38,14 +38,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <a
-                    :href="`tel:${profile.phone.replace(/\s+/g, '')}`"
-                    class="rounded-xl border border-white/[0.08] bg-black p-4 transition hover:border-white/20"
-                  >
-                    <div class="font-mono text-[10px] uppercase text-zinc-500">PHONE</div>
-                    <div class="mt-1 font-mono text-xs text-zinc-200">{{ profile.phone }}</div>
-                  </a>
-
+                
                   <a
                     :href="profile.linkedin"
                     target="_blank"
